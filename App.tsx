@@ -2,8 +2,8 @@ import {StatusBar} from 'expo-status-bar';
 import {SafeAreaView, StyleSheet, Text, useWindowDimensions} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import One from './components/One';
-import Two from './components/Two';
+import EventListNavigation from './components/EventListNavigation';
+import SingularEventView from './components/SingularEventView';
 
 export default function App() {
     const {height, width} = useWindowDimensions();
@@ -17,8 +17,10 @@ export default function App() {
         >
             <NavigationContainer>
                 <Tab.Navigator>
-                    <Tab.Screen name="Evenemang" component={One}/>
-                    <Tab.Screen name="Karta" component={Two}/>
+                    <Tab.Screen name="Evenemang">
+                        {() => <EventListNavigation/>}
+                    </Tab.Screen>
+                    {/*<Tab.Screen name="Karta"/>*/}
                 {/*    Undersök möjlighet att spara evenemang? Kan vara en logga-in funktion */}
                 </Tab.Navigator>
             </NavigationContainer>
