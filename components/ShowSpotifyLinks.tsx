@@ -1,24 +1,51 @@
 import {useEffect, useState} from "react";
-import {Linking, Text} from 'react-native';
+import {Linking, StyleSheet, Text, View} from 'react-native';
 import findArtist from "../models/spotifyApiConnect";
 
-export default function SpotifyFrame ({name}) {
+export default function SpotifyFrame ({...props}) {
     const [artistLink, setArtistLink] = useState(null);
 
-    async function getArtist() {
-        setArtistLink(await findArtist(name));
-    }
-
     useEffect(() => {
-        getArtist();
+        getArtist().then(r => 'promise ignored');
 
-        return setArtistLink(null);
+        return () => {
+            setArtistLink(null);
+        }
     }, [])
 
+    async function getArtist() {
+        try {
+            await findArtist(props.name).then(r => {
+                setArtistLink(r.tracks.items[0].artists[0].external_urls.spotify);
+            })
+        } catch (e) {
+            setArtistLink(null);
+        }
+    }
+
+    function render() {
+        if (artistLink) {
+            return (
+                <View style={styles.container}>
+                    <Text style={{color: 'blue'}}
+                          onPress={() => Linking.openURL(`${artistLink}`)}>
+                        LYSSNA HÄR!
+                    </Text>
+                </View>
+
+            )
+        }
+        return null;
+    }
+
     return (
-        <Text style={{color: 'blue'}}
-              onPress={() => Linking.openURL(`${artistLink}`)}>
-            Artisten är här
-        </Text>
+        render()
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        height: '10%',
+        justifyContent: 'center',
+    }
+});

@@ -5,13 +5,13 @@ import SingularEventView from './SingularEventView';
 
 const Stack = createNativeStackNavigator();
 
-export default function EventListNavigation() {
+export default function EventListNavigation({allEvents, setAllEvents}) {
     return (
         <Stack.Navigator initialRouteName="List" screenOptions={{
             headerShown: false
         }}>
             <Stack.Screen name="List">
-                {(screenProps) => <EventList {...screenProps}/>}
+                {(screenProps) => <EventList allEvents={allEvents} setAllEvents={setAllEvents} {...screenProps}/>}
             </Stack.Screen>
             <Stack.Screen name="Details">
                 {(screenProps) => <SingularEventView {...screenProps}/>}

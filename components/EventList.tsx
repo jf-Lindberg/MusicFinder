@@ -1,30 +1,15 @@
-import {View, Text, Button} from "react-native";
-import {useEffect, useState} from "react";
-import findEvents from "../models/ticketmasterApiConnect";
+import {Text, Button, ScrollView} from "react-native";
 import {musicEvent} from "../interface/event";
 
-export default function EventList({route, navigation}) {
-    const [allEvents, setAllEvents] = useState([]);
-
-    async function getEvents() {
-        setAllEvents(await findEvents());
-    }
-
-    useEffect(() => {
-        getEvents().then(r => 'promise ignored');
-
-        return setAllEvents([]);
-    }, []);
-
+export default function EventList({allEvents, setAllEvents, route, navigation}) {
     let eventsReturned: any[] = [];
 
     const listOfEvents = allEvents
-        .map((event: musicEvent, index) => {
+        .map((event: musicEvent, index: number) => {
             try {
-                if (event._embedded.attractions[0].externalLinks !== undefined && !eventsReturned.includes(event.name)) {
+                if (event._embedded.attractions[0].externalLinks !== undefined && !eventsReturned.includes(event.name) && event.id !== 'Z698xZq2Z17b3Fg') {
                     eventsReturned.push(event.name);
                     return <Button
-                        // title={event._embedded.attractions[0].name}
                         title={event.name}
                         key={index}
                         onPress={() => {
@@ -33,21 +18,17 @@ export default function EventList({route, navigation}) {
                             });
                         }}
                     />
-                    // return <View key={event.id}>
-                    //     <Text key={event._embedded.attractions[0].name}>{event._embedded.attractions[0].name}</Text>
-                    // </View> // SKAPA EGEN KOMPONENT SOM SER BRA UT
 
                 }
             } catch (e) {
-                console.log(e);
             }
 
         });
 
     return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ScrollView>
             <Text>EVENEMANG</Text>
             {listOfEvents}
-        </View>
+        </ScrollView>
     );
 }

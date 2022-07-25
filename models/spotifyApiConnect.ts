@@ -9,6 +9,8 @@ export default async function findArtist(artistName: string) {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
+
+    console.log('Spotify API: Fetching...');
     const response = await fetch(Spotify.token_url, authOptions)
         .then(r => r.json())
         .then(r => {
@@ -25,10 +27,12 @@ export default async function findArtist(artistName: string) {
         .catch(err => {
             console.error('Request failed', err)
         })
-    // response.then(r => {
-    //     console.log(r.tracks.items[0].preview_url)
-    // })
-    console.log(response.tracks.items[0])
-    // should just return response, not specifically the external url
-    return response.tracks.items[0].artists[0].external_urls.spotify;
+
+    if (response.tracks.items.length === 0) {
+        console.log(`Spotify API: ${artistName} not found. Throwing error.`);
+        throw new Error('No spotify page found for this artist');
+    }
+
+    console.log(`Spotify API: ${artistName} found. Returning response.`);
+    return response;
 }
