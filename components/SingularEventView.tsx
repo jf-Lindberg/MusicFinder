@@ -4,8 +4,7 @@ import {useEffect, useState} from "react";
 
 export default function SingularEventView({route, navigation}) {
     const {event} = route.params;
-    console.log(event.id);
-    console.log(event._embedded.venues);
+    console.log(event);
 
     const [imageLink, setImageLink] = useState(null);
 

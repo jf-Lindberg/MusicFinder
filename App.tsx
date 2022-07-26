@@ -1,15 +1,17 @@
 import {StatusBar} from 'expo-status-bar';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {Button, SafeAreaView, StyleSheet} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import EventListNavigation from './components/EventListNavigation';
 import {useEffect, useState} from "react";
 import findEvents from "./models/ticketmasterApiConnect";
 import {musicEvent} from "./interface/event";
+import MapViewNavigation from "./components/MapViewNavigation";
 
 const routeIcons: { [key: string]: string } = {
-    "Sök": "home"
+    "Sök": "search",
+    "Karta": "map-outline"
 };
 
 const Tab = createBottomTabNavigator();
@@ -19,10 +21,20 @@ export default function App() {
     // const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
     useEffect(() => {
+        // const getEvents = (async () => {
+        //     setAllEvents(await findEvents());
+        // })
         const getEvents = (async () => {
-            setAllEvents(await findEvents());
+            let events = await findEvents();
+            let filteredEvents = events.filter((event: musicEvent) => {
+                try {
+                   return event.id !== 'Z698xZq2Z17b3Fg' && event._embedded.attractions[0].externalLinks !== undefined
+                } catch (e) {
+                }
+            })
+            setAllEvents(filteredEvents);
         })
-        getEvents().then(r => 'promise ignored');
+        getEvents().then(r => 'ignored');
 
         return setAllEvents([]);
     }, []);
@@ -50,11 +62,11 @@ export default function App() {
                         {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents}/>}
                     </Tab.Screen>
                     <Tab.Screen name="Karta">
-                        {() => <MapViewNavigation/>}
+                        {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents}/>}
                     </Tab.Screen>
                 </Tab.Navigator>
             </NavigationContainer>
-            <StatusBar style="auto" />
+            <StatusBar style="auto"/>
         </SafeAreaView>
     );
 }
