@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Linking, StyleSheet, Text, View} from 'react-native';
-import findArtist from "../models/spotifyApiConnect";
+import spotifyApiConnect from "../models/spotifyApiConnect";
 
 export default function SpotifyFrame ({...props}) {
     const [artistLink, setArtistLink] = useState(null);
@@ -15,7 +15,7 @@ export default function SpotifyFrame ({...props}) {
 
     async function getArtist() {
         try {
-            await findArtist(props.name).then(r => {
+            await spotifyApiConnect.findArtist(props.name).then(r => {
                 setArtistLink(r.tracks.items[0].artists[0].external_urls.spotify);
             })
         } catch (e) {

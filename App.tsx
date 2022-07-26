@@ -21,9 +21,6 @@ export default function App() {
     // const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
     useEffect(() => {
-        // const getEvents = (async () => {
-        //     setAllEvents(await findEvents());
-        // })
         const getEvents = (async () => {
             let events = await findEvents();
             let filteredEvents = events.filter((event: musicEvent) => {
