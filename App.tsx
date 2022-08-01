@@ -1,5 +1,5 @@
 import {StatusBar} from 'expo-status-bar';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {Button, Modal, SafeAreaView, StyleSheet, Text} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import findEvents from "./models/ticketmasterApiConnect";
 import {musicEvent} from "./interface/event";
 import MapViewNavigation from "./components/MapViewNavigation";
+import LoginModal from "./components/LoginModal";
 
 const routeIcons: { [key: string]: string } = {
     "Sök": "search",
@@ -16,8 +17,10 @@ const routeIcons: { [key: string]: string } = {
 
 const Tab = createBottomTabNavigator();
 
+
 export default function App() {
     const [allEvents, setAllEvents] = useState<Array<musicEvent>>([]);
+    const [isVisible, setIsVisible] = useState<Boolean>(true);
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
     useEffect(() => {
@@ -42,6 +45,16 @@ export default function App() {
                 flex: 1
             }}
         >
+            <Modal
+                animationType={"fade"}
+                transparent={false}
+                visible={isVisible}
+                onRequestClose={() => {
+                    console.log("Modal has been closed.")
+                }}>
+                <LoginModal setIsVisible={setIsVisible} setIsLoggedIn={setIsLoggedIn}/>
+            </Modal>
+
             <NavigationContainer>
                 <Tab.Navigator screenOptions={({route}) => ({
                     tabBarIcon: ({focused, color, size}) => {
@@ -56,10 +69,10 @@ export default function App() {
                 })}
                 >
                     <Tab.Screen name="Sök">
-                        {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents}/>}
+                        {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents} setIsVisible={setIsVisible} isLoggedIn={isLoggedIn}/>}
                     </Tab.Screen>
                     <Tab.Screen name="Kartvy">
-                        {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents}/>}
+                        {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents} setIsVisible={setIsVisible} isLoggedIn={isLoggedIn}/>}
                     </Tab.Screen>
                 </Tab.Navigator>
             </NavigationContainer>
