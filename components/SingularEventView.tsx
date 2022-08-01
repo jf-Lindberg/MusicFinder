@@ -1,9 +1,9 @@
-import {View, Text, Image, StyleSheet, Linking, Button} from "react-native";
+import {View, Text, Image, StyleSheet, Linking} from "react-native";
 import SpotifyFrame from "./ShowSpotifyLinks";
-import {useEffect, useState} from "react";
 import getEventData from "../models/getEventData";
+import MapView, {Marker} from "react-native-maps";
 
-export default function SingularEventView({route, navigation}) {
+export default function SingularEventView({route}) {
     const {event} = route.params;
     console.log(event);
 
@@ -30,21 +30,31 @@ export default function SingularEventView({route, navigation}) {
                 <Text>Address:</Text>
                 <Text>{getEventData.getAddress(event)}, {event._embedded.venues[0].city.name}</Text>
             </View>
+            <View style={{flex: 1}}>
+                <MapView style={styles.map}>
+                    <Marker
+                        key={event.id}
+                        coordinate={{
+                            latitude: parseFloat(event._embedded.venues[0].location.latitude),
+                            longitude: parseFloat(event._embedded.venues[0].location.longitude)
+                        }}
+                        title={event._embedded.attractions[0].name}
+                        description={event.name}
+                    />
+                </MapView>
+            </View>
             <Text style={{color: 'blue'}}
                   onPress={() => Linking.openURL(event.url)}>
                 Köp biljetter
             </Text>
-            <Button
-                title='Gå tillbaka till listvyn'
-                onPress={() => {
-                    navigation.navigate('List');
-                }}
-            />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    map: {
+        ...StyleSheet.absoluteFillObject,
+    },
     artist: {
         fontSize: 24
     }

@@ -1,5 +1,5 @@
 import {StatusBar} from 'expo-status-bar';
-import {Button, SafeAreaView, StyleSheet} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -11,21 +11,21 @@ import MapViewNavigation from "./components/MapViewNavigation";
 
 const routeIcons: { [key: string]: string } = {
     "Sök": "search",
-    "Karta": "map-outline"
+    "Kartvy": "map-outline"
 };
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
     const [allEvents, setAllEvents] = useState<Array<musicEvent>>([]);
-    // const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+    const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
     useEffect(() => {
         const getEvents = (async () => {
             let events = await findEvents();
             let filteredEvents = events.filter((event: musicEvent) => {
                 try {
-                   return event.id !== 'Z698xZq2Z17b3Fg' && event._embedded.attractions[0].externalLinks !== undefined
+                    return event.id !== 'Z698xZq2Z17b3Fg' && event._embedded.attractions[0].externalLinks !== undefined
                 } catch (e) {
                 }
             })
@@ -58,7 +58,7 @@ export default function App() {
                     <Tab.Screen name="Sök">
                         {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents}/>}
                     </Tab.Screen>
-                    <Tab.Screen name="Karta">
+                    <Tab.Screen name="Kartvy">
                         {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents}/>}
                     </Tab.Screen>
                 </Tab.Navigator>

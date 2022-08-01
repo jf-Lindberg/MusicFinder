@@ -8,7 +8,7 @@ export default function EventList({allEvents, setAllEvents, route, navigation}) 
                 title={event.name}
                 key={index}
                 onPress={() => {
-                    navigation.navigate('Details', {
+                    navigation.navigate('Evenemang', {
                         event: event
                     });
                 }}

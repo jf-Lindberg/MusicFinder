@@ -7,13 +7,11 @@ const Stack = createNativeStackNavigator();
 
 export default function MapViewNavigation({allEvents, setAllEvents}) {
     return (
-        <Stack.Navigator initialRouteName="MapView" screenOptions={{
-            headerShown: false
-        }}>
-            <Stack.Screen name="MapView">
+        <Stack.Navigator initialRouteName="Karta" screenOptions={{}}>
+            <Stack.Screen name="Karta">
                 {(screenProps) => <MapViewAllEvents allEvents={allEvents} setAllEvents={setAllEvents} {...screenProps}/>}
             </Stack.Screen>
-            <Stack.Screen name="Details">
+            <Stack.Screen name="Evenemang">
                 {(screenProps) => <SingularEventView {...screenProps}/>}
             </Stack.Screen>
         </Stack.Navigator>
