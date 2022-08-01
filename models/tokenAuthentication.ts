@@ -59,5 +59,10 @@ export default {
                 'content-type:': 'application/json'
             }
         });
-    }
+
+        return await response.json();
+    },
+    logout: async function logout() {
+        await storage.deleteToken();
+    },
 }
