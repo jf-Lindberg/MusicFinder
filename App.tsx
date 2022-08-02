@@ -1,5 +1,5 @@
 import {StatusBar} from 'expo-status-bar';
-import {Button, Modal, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -8,7 +8,7 @@ import {useEffect, useState} from "react";
 import findEvents from "./models/ticketmasterApiConnect";
 import {musicEvent} from "./interface/event";
 import MapViewNavigation from "./components/MapViewNavigation";
-import LoginModal from "./components/LoginModal";
+import tokenAuthentication from "./models/tokenAuthentication";
 
 const routeIcons: { [key: string]: string } = {
     "Sök": "search",
@@ -20,7 +20,6 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
     const [allEvents, setAllEvents] = useState<Array<musicEvent>>([]);
-    const [isVisible, setIsVisible] = useState<Boolean>(true);
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
     useEffect(() => {
@@ -39,22 +38,19 @@ export default function App() {
         return setAllEvents([]);
     }, []);
 
+    useEffect(() => {
+        const checkLoggedIn = async () => {
+            setIsLoggedIn(await tokenAuthentication.loggedIn())
+        };
+        checkLoggedIn().then(r => 'ignored');
+    }, []);
+
     return (
         <SafeAreaView
             style={{
                 flex: 1
             }}
         >
-            <Modal
-                animationType={"fade"}
-                transparent={false}
-                visible={isVisible}
-                onRequestClose={() => {
-                    console.log("Modal has been closed.")
-                }}>
-                <LoginModal setIsVisible={setIsVisible} setIsLoggedIn={setIsLoggedIn}/>
-            </Modal>
-
             <NavigationContainer>
                 <Tab.Navigator screenOptions={({route}) => ({
                     tabBarIcon: ({focused, color, size}) => {
@@ -69,10 +65,13 @@ export default function App() {
                 })}
                 >
                     <Tab.Screen name="Sök">
-                        {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents} setIsVisible={setIsVisible} isLoggedIn={isLoggedIn}/>}
+                        {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents} isLoggedIn={isLoggedIn}/>}
                     </Tab.Screen>
                     <Tab.Screen name="Kartvy">
-                        {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents} setIsVisible={setIsVisible} isLoggedIn={isLoggedIn}/>}
+                        {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents} isLoggedIn={isLoggedIn}/>}
+                    </Tab.Screen>
+                    <Tab.Screen name="Mina sidor">
+                        {() => <UserNavigation setIsLoggedIn={setIsLoggedIn}/>}
                     </Tab.Screen>
                 </Tab.Navigator>
             </NavigationContainer>

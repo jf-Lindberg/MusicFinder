@@ -1,7 +1,6 @@
 import AuthAPI from "../constants/AuthAPI";
 
 import storage from './storage';
-import {showMessage} from "react-native-flash-message";
 
 export default {
     loggedIn: async function loggedIn() {

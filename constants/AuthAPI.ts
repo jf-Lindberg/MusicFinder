@@ -1,5 +1,5 @@
-const CLIENT_ID = '12bc0a8d311905eed769ad45dd5eafc1';
-const BASE_URL = 'https://lager.emilfolino.se/v2/auth/login';
+const CLIENT_ID = 'bcdbd376219d762cc5d1150682278c32';
+const BASE_URL = 'https://auth.emilfolino.se/api_key/confirmation';
 
 export default {
     id: CLIENT_ID,

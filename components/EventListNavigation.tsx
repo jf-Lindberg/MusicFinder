@@ -4,7 +4,7 @@ import EventList from './EventList';
 import SingularEventView from './SingularEventView';
 import {Button, Text} from "react-native";
 
-const Stack = createNativeStackNavigator();
+    const Stack = createNativeStackNavigator();
 
 export default function EventListNavigation({allEvents, setAllEvents, setIsVisible, isLoggedIn}) {
     return (
