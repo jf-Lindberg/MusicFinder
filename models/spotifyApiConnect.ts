@@ -1,6 +1,6 @@
 import Spotify from '../constants/Spotify';
 
-const spotifyApiConnect = {
+export default {
     findArtist: async function findArtist(artistName: string) {
         let encodedArtistName = encodeURIComponent(artistName);
         let authOptions = {
@@ -38,5 +38,3 @@ const spotifyApiConnect = {
         return response;
     }
 }
-
-export default spotifyApiConnect;

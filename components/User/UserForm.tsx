@@ -1,14 +1,13 @@
 import {View, Text, TextInput, Button} from "react-native";
+import tokenAuthentication from "../../models/tokenAuthentication";
 
-export default function AuthFields({auth, setAuth, title, submit, navigation}) {
+export default function UserForm({auth, setAuth, title, submit, navigation, logout}) {
     return (
         <View>
             <Text>{title}</Text>
             <Text>E-post</Text>
             <TextInput
                 onChangeText={(content: string) => {
-                    // validateEmail(content); -- deprecated
-                    // now validated through validateUser in auth model
                     setAuth({...auth, email: content})
                 }}
                 value={auth?.email}
@@ -19,8 +18,6 @@ export default function AuthFields({auth, setAuth, title, submit, navigation}) {
             <Text>Lösenord</Text>
             <TextInput
                 onChangeText={(content: string) => {
-                    // validatePassword(content); -- deprecated
-                    // now validated on submit through validateUser in auth model
                     setAuth({...auth, password: content})
                 }}
                 value={auth?.password}
@@ -43,6 +40,12 @@ export default function AuthFields({auth, setAuth, title, submit, navigation}) {
                     }}
                 />
             }
+            <Button
+                title="Logga ut"
+                onPress={() => {
+                    logout();
+                }}
+            />
         </View>
     );
 };

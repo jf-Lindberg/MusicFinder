@@ -1,6 +1,6 @@
 import AuthAPI from "../constants/AuthAPI";
 
-import storage from './storage';
+import storage from './tokenStorage';
 
 export default {
     loggedIn: async function loggedIn() {
@@ -14,17 +14,17 @@ export default {
 
         return token && notExpired;
     },
-    login: async function login(email: string, password: string) {
+    login: async function login(email: string | undefined, password: string | undefined) {
         const data = {
             api_key: AuthAPI.id,
             email: email,
             password: password
         };
-        const response = await fetch(`${AuthAPI.url}`, {
+        const response = await fetch(`${AuthAPI.url}/login`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'content-type:': 'application/json'
+                'content-type': 'application/json'
             }
         });
         const result = await response.json();
@@ -45,17 +45,17 @@ export default {
             type: 'success'
         };
     },
-    register: async function register(email: string, password: string) {
+    register: async function register(email: string | undefined, password: string | undefined) {
         const data = {
             api_key: AuthAPI.id,
             email: email,
             password: password
         };
-        const response = await fetch(`${AuthAPI.url}`, {
+        const response = await fetch(`${AuthAPI.url}/register`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'content-type:': 'application/json'
+                'content-type': 'application/json'
             }
         });
 

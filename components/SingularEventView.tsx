@@ -1,11 +1,27 @@
 import {View, Text, Image, StyleSheet, Linking} from "react-native";
+import {Ionicons} from '@expo/vector-icons';
 import SpotifyFrame from "./ShowSpotifyLinks";
 import getEventData from "../models/getEventData";
 import MapView, {Marker} from "react-native-maps";
+import {userData} from "../models/userData";
+import {useEffect, useState} from "react";
+import fonts from "../styles/variables/fonts";
 
 export default function SingularEventView({route}) {
     const {event} = route.params;
-    console.log(event);
+    console.log(event._embedded.venues);
+
+    const [liked, setLiked] = useState<number>(-1);
+
+    const refresh = async () => {
+        setLiked(await userData.includes(event));
+    }
+
+    useEffect(() => {
+        refresh().then(r => 'ignored');
+    }, []);
+
+    const isLiked = () => liked > -1;
 
     return (
         <View style={{flex: 1, justifyContent: 'flex-start'}}>
@@ -47,6 +63,25 @@ export default function SingularEventView({route}) {
                   onPress={() => Linking.openURL(event.url)}>
                 Köp biljetter
             </Text>
+            {isLiked() ?
+                // Make own component
+                <Ionicons
+                    title='Ska vara ett hjärta (lägg till)'
+                    size={100}
+                    onPress={() => {
+                        userData.remove(liked).then(r => refresh());
+                    }}
+                    name="heart"/>
+                :
+                <Ionicons
+                    title='Ska vara ett hjärta (lägg till)'
+                    size={100}
+                    onPress={() => {
+                        userData.add(event).then(r => refresh());
+                    }}
+                 name="heart-outline"/>
+            }
+            {console.log(liked)}
         </View>
     );
 }
@@ -56,6 +91,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
     artist: {
-        fontSize: 24
+        fontSize: 24,
+        fontFamily: fonts.main
     }
 });

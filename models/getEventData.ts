@@ -1,5 +1,5 @@
-const getEventData = {
-    getBestImage: function getBestImage(event) {
+export default {
+    getBestImage: function getBestImage(event: { images: string | any[]; }) {
         let bestImage = event.images[0];
         for (let i = 0; i < event.images.length; i++) {
             if (event.images[i].width > bestImage.width) {
@@ -16,6 +16,4 @@ const getEventData = {
         }
     }
 }
-
-export default getEventData;
 
