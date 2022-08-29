@@ -4,7 +4,7 @@ import tokenAuthentication from '../../models/tokenAuthentication';
 import UserForm from './UserForm';
 import userValidation from "../../models/userValidation";
 
-export default function Register({navigation}) {
+export default function Register({navigation, dimensions}) {
     const [auth, setAuth] = useState<Partial<Auth>>({});
 
     async function doRegister() {
@@ -19,6 +19,7 @@ export default function Register({navigation}) {
             auth={auth}
             setAuth={setAuth}
             submit={doRegister}
+            dimensions={dimensions}
             title="Registrera"
             navigation={navigation}
         />

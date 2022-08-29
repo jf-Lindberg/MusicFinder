@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
-import {Dimensions, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {Dimensions} from 'react-native';
 import FlashMessage from "react-native-flash-message";
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -11,16 +11,16 @@ import {Ionicons} from '@expo/vector-icons';
 import {musicEvent} from "./interface/event";
 
 import EventListNavigation from './components/EventListNavigation';
-import MapViewNavigation from "./components/MapViewNavigation";
 import UserNavigation from "./components/User/UserNavigation";
 import SavedEvents from "./components/User/SavedEvents";
-import HomeScreen from "./components/Home/HomeScreen";
 import checkLoggedIn from "./hooks/checkLoggedIn";
 
 import getEvents from "./hooks/getEvents";
 import getFonts from "./hooks/loadFonts";
 
 import colors from "./styles/variables/colors";
+import HomeScreenNavigation from "./components/Home/HomeScreenNavigation";
+import getUserCoords from "./hooks/getUserCoords";
 
 const routeIcons: { [key: string]: string } = {
     "Hem": "home",
@@ -36,19 +36,17 @@ export default function App() {
     const screen = Dimensions.get("screen");
     const standardScreenHeight = 896;
     const [dimensions, setDimensions] = useState({window, screen, standardScreenHeight});
-    const [appIsReady, setAppIsReady] = useState<Boolean>(false);
     const [allEvents, setAllEvents] = useState<Array<musicEvent>>([]);
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+    const [appIsReady, setAppIsReady] = useState<Boolean>(false);
 
     const [fontsLoaded] = getFonts();
 
     useEffect(() => {
         async function prepareApp() {
             try {
-                await Promise.all(
-                    [getEvents(setAllEvents),
-                        checkLoggedIn(isLoggedIn, setIsLoggedIn)]
-                )
+                setAllEvents(await getEvents());
+                setIsLoggedIn(await checkLoggedIn());
             } catch (e) {
                 console.warn(e);
             } finally {
@@ -58,7 +56,22 @@ export default function App() {
 
         prepareApp().then(r => 'ignored');
 
+        return setAllEvents([]);
     }, []);
+
+    useEffect(() => {
+        async function loadLocation() {
+            try {
+                const LOCATION = await getUserCoords();
+                setAllEvents(await getEvents('', LOCATION)); // Fixing this signature error will crash app
+            } catch(e) {
+                console.warn(e);
+            }
+        }
+
+        loadLocation().then(r => 'ignored');
+    }, [])
+
 
     const onLayoutRootView = useCallback(async () => {
         if (appIsReady) {
@@ -79,59 +92,45 @@ export default function App() {
     }
 
     return (
-        <>
-            <SafeAreaView
-                edges={["top"]}
-                style={{flex: 0, backgroundColor: colors.blue}}
-                onLayout={onLayoutRootView}
-            />
-            <SafeAreaView
-                edges={["left", "right", "bottom"]}
-                style={{
-                    flex: 1,
-                    backgroundColor: colors.bg,
-                    position: "relative",
-                }}
-                onLayout={onLayoutRootView}
+        <NavigationContainer
+            theme={NavigationContainerTheme}
+            onReady={onLayoutRootView}
+        >
+            <Tab.Navigator screenOptions={({route}) => ({
+                tabBarIcon: ({focused, color, size}) => {
+                    let iconName = routeIcons[route.name] || "alert";
+
+                    // @ts-ignore
+                    return <Ionicons name={iconName} size={size} color={color}/>;
+                },
+                tabBarActiveTintColor: 'blue',
+                tabBarInactiveTintColor: 'gray',
+                headerShown: false
+            })}
             >
-                <StatusBar style="light"/>
-                <NavigationContainer theme={NavigationContainerTheme}>
-                    <Tab.Navigator screenOptions={({route}) => ({
-                        tabBarIcon: ({focused, color, size}) => {
-                            let iconName = routeIcons[route.name] || "alert";
+                <Tab.Screen name="Hem">
+                    {() => <HomeScreenNavigation allEvents={allEvents} dimensions={dimensions}/>}
+                </Tab.Screen>
+                <Tab.Screen name="Sök">
+                    {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents}
+                                                isLoggedIn={isLoggedIn}/>}
+                </Tab.Screen>
+                <Tab.Screen name="Kartvy">
+                    {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents}
+                                              isLoggedIn={isLoggedIn}/>}
+                </Tab.Screen>
+                {isLoggedIn ?
+                    <Tab.Screen name="Mina sidor">
+                        {() => <SavedEvents setIsLoggedIn={setIsLoggedIn}/>}
+                    </Tab.Screen> :
+                    <Tab.Screen name="Logga in">
+                        {() => <UserNavigation setIsLoggedIn={setIsLoggedIn} dimensions={dimensions}/>}
+                    </Tab.Screen>
+                }
 
-                            // @ts-ignore
-                            return <Ionicons name={iconName} size={size} color={color}/>;
-                        },
-                        tabBarActiveTintColor: 'blue',
-                        tabBarInactiveTintColor: 'gray',
-                        headerShown: false
-                    })}
-                    >
-                        <Tab.Screen name="Hem">
-                            {() => <HomeScreen allEvents={allEvents} dimensions={dimensions}/>}
-                        </Tab.Screen>
-                        <Tab.Screen name="Sök">
-                            {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents}
-                                                        isLoggedIn={isLoggedIn}/>}
-                        </Tab.Screen>
-                        <Tab.Screen name="Kartvy">
-                            {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents}
-                                                      isLoggedIn={isLoggedIn}/>}
-                        </Tab.Screen>
-                        {isLoggedIn ?
-                            <Tab.Screen name="Mina sidor">
-                                {() => <SavedEvents setIsLoggedIn={setIsLoggedIn}/>}
-                            </Tab.Screen> :
-                            <Tab.Screen name="Logga in">
-                                {() => <UserNavigation setIsLoggedIn={setIsLoggedIn}/>}
-                            </Tab.Screen>
-                        }
-
-                    </Tab.Navigator>
-                </NavigationContainer>
-                <FlashMessage position="top"/>
-            </SafeAreaView>
-        </>
+            </Tab.Navigator>
+            <StatusBar style="light"/>
+            <FlashMessage position="top"/>
+        </NavigationContainer>
     );
 }

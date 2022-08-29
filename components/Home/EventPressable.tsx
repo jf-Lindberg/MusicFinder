@@ -4,7 +4,7 @@ import fonts from "../../styles/variables/fonts";
 import colors from "../../styles/variables/colors";
 import {RFValue} from "react-native-responsive-fontsize";
 
-export default function EventPressable({event, dimensions, imageScale}) {
+export default function EventPressable({event, dimensions, imageScale, navigation}) {
     const scale = {
         width: 0.88 * imageScale.width,
         height: 0.23 * imageScale.height
@@ -35,9 +35,18 @@ export default function EventPressable({event, dimensions, imageScale}) {
         }
     });
 
+    const goToEvent = async () => {
+        navigation.navigate('Evenemang', {
+            event: event,
+            name: event._embedded.attractions[0].name
+        });
+    };
+
     return (
         <Pressable
-            /*onPress={}*/
+            onPress={() => {
+                goToEvent().then(r => 'ignored');
+            }}
         >
             <View
                 style={styles.boxShadow}

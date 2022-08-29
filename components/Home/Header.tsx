@@ -1,10 +1,10 @@
 import colors from "../../styles/variables/colors";
 import {Typography} from "../../styles/index";
-import {Text, View, StyleSheet} from "react-native";
+import {Text, View, StyleSheet, Pressable} from "react-native";
 import fonts from "../../styles/variables/fonts";
 import {RFValue} from "react-native-responsive-fontsize";
 
-export default function Header({dimensions}) {
+export default function Header({dimensions, navigation}) {
     const styles = StyleSheet.create({
         headerContainer: {
             backgroundColor: colors.blue,
@@ -52,7 +52,14 @@ export default function Header({dimensions}) {
             </View>
             <View style={styles.belowLogoContainer}>
                 <Text style={styles.belowLogo}>Already have tickets?</Text>
-                <Text style={styles.signIn}>Sign in</Text>
+                <Pressable
+                    onPress={() => {
+                        navigation.navigate("Logga in")
+                    }}
+                >
+                    <Text style={styles.signIn}>Sign in</Text>
+                </Pressable>
+
             </View>
         </View>
     )

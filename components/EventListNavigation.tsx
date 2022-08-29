@@ -1,7 +1,6 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import EventList from './EventList';
-import SingularEventView from './SingularEventView';
 import {Button, Text} from "react-native";
 
 const Stack = createNativeStackNavigator();

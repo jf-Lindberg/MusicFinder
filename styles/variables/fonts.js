@@ -1,5 +1,3 @@
-import {NunitoSans_900Black, NunitoSans_900Black_Italic} from "@expo-google-fonts/nunito-sans";
-
 export default {
     reg400: 'NunitoSans_400Regular',
     italic400: 'NunitoSans_400Regular_Italic',

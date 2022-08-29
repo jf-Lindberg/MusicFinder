@@ -1,6 +1,5 @@
 import {Text, SafeAreaView, View, StyleSheet, ScrollView} from "react-native";
 import {Divider} from "@react-native-material/core";
-import {musicEvent} from "../../interface/event";
 import Header from "./Header";
 import EventPressable from "./EventPressable";
 import EventCarousel from "./EventCarousel";
@@ -8,12 +7,7 @@ import colors from "../../styles/variables/colors";
 import fonts from "../../styles/variables/fonts";
 import {RFValue} from "react-native-responsive-fontsize";
 
-export default function HomeScreen({allEvents, dimensions}) {
-    // console.log(allEvents[1]._embedded.attractions[0]);
-
-    // NAMN = allEvents[INDEX]._embedded.attractions[0].name
-    // BILDER = allEvents[1]._embedded.attractions[0].images
-
+export default function HomeScreen({allEvents, dimensions, navigation}) {
     const styles = StyleSheet.create({
         divider: {
             marginTop: dimensions.screen.height * 0.05
@@ -29,40 +23,52 @@ export default function HomeScreen({allEvents, dimensions}) {
         }
     })
 
-    const listOfEvents = allEvents
-        .map((event: musicEvent, index: number) => {
-            return <Text>{event.name}</Text>
-        });
-
-    console.log(allEvents[11]);
-
     return (
-        <ScrollView>
-            <Header dimensions={dimensions}/>
-            <View style={{marginTop: -dimensions.screen.height * 0.033}}>
-                <EventPressable event={allEvents[1]} dimensions={dimensions} imageScale={{width: 1, height: 1}}/>
-            </View>
-            <View style={{marginTop: dimensions.screen.height * 0.065}}>
-                <EventCarousel events={[allEvents[5], allEvents[3], allEvents[6]]} dimensions={dimensions}
-                               imageScale={{width: 0.75, height: 0.75}}/>
-            </View>
-            <Divider style={styles.divider} leadingInset={24} trailingInset={24} color={colors.divider}/>
-            <View style={styles.popularContainer}>
-                <Text style={styles.popular}>Popular tickets</Text>
-            </View>
-            <View style={{marginTop: dimensions.screen.height * 0.065}}>
-                <EventCarousel events={[allEvents[11], allEvents[18], allEvents[15]]} dimensions={dimensions}
-                               imageScale={{width: 0.75, height: 0.75}}/>
-            </View>
-            <Divider style={styles.divider} leadingInset={24} trailingInset={24} color={colors.divider}/>
-            <View style={styles.popularContainer}>
-                <Text style={styles.popular}>Discover</Text>
-            </View>
-            <View style={{marginTop: dimensions.screen.height * 0.065}}>
-                <EventCarousel events={[allEvents[17], allEvents[8], allEvents[21]]} dimensions={dimensions}
-                               imageScale={{width: 0.75, height: 0.75}}/>
-            </View>
-        </ScrollView>
+        <>
+            <SafeAreaView
+                edges={["top"]}
+                style={{
+                    flex: 0,
+                    backgroundColor: colors.blue
+                }}
+            />
+            <SafeAreaView
+                edges={["left", "right", "bottom"]}
+                style={{
+                    flex: 1,
+                    backgroundColor: colors.bg,
+                    position: "relative",
+                }}
+            >
+                <ScrollView>
+                    <Header dimensions={dimensions} navigation={navigation}/>
+                    <View style={{marginTop: -dimensions.screen.height * 0.033}}>
+                        <EventPressable event={allEvents[0]} dimensions={dimensions} imageScale={{width: 1, height: 1}}
+                                        navigation={navigation}/>
+                    </View>
+                    <View style={{marginTop: dimensions.screen.height * 0.065}}>
+                        <EventCarousel events={[allEvents[1], allEvents[2], allEvents[3]]} dimensions={dimensions}
+                                       imageScale={{width: 0.75, height: 0.75}} navigation={navigation}/>
+                    </View>
+                    <Divider style={styles.divider} leadingInset={24} trailingInset={24} color={colors.divider}/>
+                    <View style={styles.popularContainer}>
+                        <Text style={styles.popular}>Popular tickets</Text>
+                    </View>
+                    <View style={{marginTop: dimensions.screen.height * 0.065}}>
+                        <EventCarousel events={[allEvents[4], allEvents[5], allEvents[6]]} dimensions={dimensions}
+                                       imageScale={{width: 0.75, height: 0.75}} navigation={navigation}/>
+                    </View>
+                    <Divider style={styles.divider} leadingInset={24} trailingInset={24} color={colors.divider}/>
+                    <View style={styles.popularContainer}>
+                        <Text style={styles.popular}>Discover</Text>
+                    </View>
+                    <View style={{marginTop: dimensions.screen.height * 0.065}}>
+                        <EventCarousel events={[allEvents[7], allEvents[8], allEvents[9]]} dimensions={dimensions}
+                                       imageScale={{width: 0.75, height: 0.75}} navigation={navigation}/>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        </>
     )
 }
 

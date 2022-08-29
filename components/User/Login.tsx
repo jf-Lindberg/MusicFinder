@@ -4,8 +4,10 @@ import tokenAuthentication from '../../models/tokenAuthentication';
 import userValidation from "../../models/userValidation";
 import UserForm from './UserForm';
 import {showMessage} from "react-native-flash-message";
+import {View} from "react-native";
 
-export default function Login({navigation, setIsLoggedIn}) {
+
+export default function Login({navigation, setIsLoggedIn, dimensions}) {
     const [auth, setAuth] = useState<Partial<Auth>>({});
 
     async function doLogin() {
@@ -24,13 +26,17 @@ export default function Login({navigation, setIsLoggedIn}) {
     }
 
     return (
-        <UserForm
-            auth={auth}
-            setAuth={setAuth}
-            submit={doLogin}
-            logout={doLogout}
-            title="Logga in"
-            navigation={navigation}
-        />
+        <View style={{flex: 1}}>
+            <UserForm
+                auth={auth}
+                setAuth={setAuth}
+                submit={doLogin}
+                logout={doLogout}
+                dimensions={dimensions}
+                title="Logga in"
+                navigation={navigation}
+            />
+        </View>
+
     );
 };

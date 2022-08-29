@@ -1,3 +1,6 @@
-- Hitta ett sätt att hitta populära evenemang
-- Använd "artist"-queryn i ticketmaster API för att hitta alla events av en artist
-- Lägg till description på homescreen
+- Shadows på singleEventView
+- Fixa spotifylänkar
+- Lägg till mer info på ArtistEvents
+- Lägg till möjlighet att favoritmarkera evenemang
+- Fixa styling på login-skärmen
+- Lägg till kartvy

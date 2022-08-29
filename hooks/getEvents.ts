@@ -1,13 +1,15 @@
-import findEvents from "../models/ticketmasterApiConnect";
+import ticketMasterApiConnect from "../models/ticketmasterApiConnect";
 import {musicEvent} from "../interface/event";
+import Geohash from "latlon-geohash";
 
-export default async function getEvents(setAllEvents) {
-    let events = await findEvents();
-    let filteredEvents = events.filter((event: musicEvent) => {
+const DEFAULT_GEOPOINT = Geohash.encode(<number>59.329249546700744, <number>18.068613228289472, 6);
+
+export default async function getEvents(searchTerm: string = '', geoPoint = DEFAULT_GEOPOINT) {
+    let events = await ticketMasterApiConnect.findEvents(searchTerm, geoPoint);
+    return events.filter((event: musicEvent) => {
         try {
             return event.id !== 'Z698xZq2Z17b3Fg' && event._embedded.attractions[0].externalLinks !== undefined
         } catch (e) {
         }
-    })
-    setAllEvents(filteredEvents);
+    });
 };

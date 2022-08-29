@@ -4,14 +4,15 @@ import Carousel from "react-native-snap-carousel";
 import EventPressable from "./EventPressable";
 
 
-export default function EventCarousel({events, dimensions, imageScale}) {
+export default function EventCarousel({events, dimensions, imageScale, navigation}) {
     const CarouselItem = ({item, index}) => {
         return (
             <View key={index}>
-                <EventPressable event={item} dimensions={dimensions} imageScale={imageScale}/>
+                <EventPressable event={item} dimensions={dimensions} imageScale={imageScale} navigation={navigation}/>
             </View>
         )
     }
+
 
     return (
         <View>
