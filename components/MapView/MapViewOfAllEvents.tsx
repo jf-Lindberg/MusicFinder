@@ -5,33 +5,14 @@ import MapView, {Callout, Marker} from "react-native-maps";
 import {StyleSheet, Text, View} from "react-native";
 import generateUserFriendlyEvent from "../../models/generateUserFriendlyEvent";
 
-export default function MapViewOfEvents({artist, navigation}) {
+export default function MapViewOfAllEvents({dimensions, allEvents, navigation}) {
     const styles = StyleSheet.create({
         map: {
             ...StyleSheet.absoluteFillObject,
         }
-    })
+    });
 
-    const [events, setEvents] = useState<Array<musicEvent>>([]);
-    const [dataLoaded, setDataLoaded] = useState(false);
-
-    useEffect(() => {
-        async function getEvents() {
-            try {
-                await getEventData.getAttractionEvents(artist)
-                    .then(r => setEvents(r));
-            } catch (e) {
-                console.error(e)
-            } finally {
-                setDataLoaded(true);
-            }
-
-        }
-
-        getEvents().then(r => 'ignored');
-    }, []);
-
-    const markers = events
+    const markers = allEvents
         .map((event: musicEvent, index: number) => {
             const cleanEvent = generateUserFriendlyEvent.create(event);
 
@@ -61,16 +42,15 @@ export default function MapViewOfEvents({artist, navigation}) {
             )
         })
 
-    if (!dataLoaded) {
-        return null;
-    }
-
     return (
-        <MapView
-            style={styles.map}
-            userInterfaceStyle={'dark'}
-        >
-            {markers}
-        </MapView>
+        <View style={{flex: 1}}>
+            <Text>Hello!</Text>
+            <MapView
+                style={styles.map}
+                userInterfaceStyle={'dark'}
+            >
+                {markers}
+            </MapView>
+        </View>
     )
 }

@@ -62,7 +62,7 @@ const userData = {
             return await response;
         }
         catch (e) {
-            // ...
+            console.log(e);
         }
 
     },

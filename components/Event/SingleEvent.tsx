@@ -1,14 +1,14 @@
-import {Image, ImageBackground, StyleSheet, Text, View} from "react-native";
-import getEventData from "../../models/getEventData";
+import {Button, Image, ImageBackground, Linking, Pressable, StyleSheet, Text, View} from "react-native";
 import colors from "../../styles/variables/colors";
 import fonts from "../../styles/variables/fonts";
 import {RFValue} from "react-native-responsive-fontsize";
-import MapView, {Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import MapStyle from "../../constants/MapStyle";
-import {useState} from "react";
+import MapView, {Callout, Marker} from "react-native-maps";
+import {FontAwesome} from '@expo/vector-icons';
+import generateUserFriendlyEvent from "../../models/generateUserFriendlyEvent";
 
-export default function SingleEvent({route, dimensions}) {
+export default function SingleEvent({route, dimensions, navigation, isLoggedIn}) {
     const {event} = route.params;
+    const {artistLink} = route.params;
 
     const styles = StyleSheet.create({
         backgroundImage: {
@@ -74,29 +74,13 @@ export default function SingleEvent({route, dimensions}) {
         }
     });
 
-    const [liked, setLiked] = useState<number>(-1);
-    const isLiked = () => liked > -1;
-
-    const eventName = event.name;
-    const city = event._embedded.venues[0].city.name;
-    let address = '';
-    try {
-        address = event._embedded.venues[0].address.line1;
-    } catch (e) {
-        // ...
-    }
-
-    const artistImage = {
-        uri: `${getEventData.getBestImage(event)}`
-    }
-    const artist = getEventData.getArtist(event);
-
+    const cleanEvent = generateUserFriendlyEvent.create(event);
 
     return (
         <View style={{flex: 1}}>
             <ImageBackground
                 style={styles.backgroundImage}
-                source={artistImage}
+                source={cleanEvent.artistImage}
                 blurRadius={11}
                 resizeMode='cover'
             >
@@ -104,14 +88,18 @@ export default function SingleEvent({route, dimensions}) {
                     <View style={styles.artistInfoContainer}>
                         <Image
                             style={styles.artistImage}
-                            source={artistImage}
+                            source={cleanEvent.artistImage}
                             resizeMode="cover"
                         />
-                        <Text style={styles.artist}>{artist}</Text>
-                        <Text style={styles.genre}>{address}, {city}</Text>
-                        <Text style={styles.genre}>01/01/2001</Text>
-                        {/*mapview*/}
-                        {/*spotifylink*/}
+
+                        <View style={{flexDirection: 'row'}}>
+                            <View>
+                                <Text style={styles.artist}>{cleanEvent.artist}</Text>
+                                <Text
+                                    style={styles.genre}>{cleanEvent.day}/{cleanEvent.monthNumeric}/{cleanEvent.year}</Text>
+                            </View>
+                        </View>
+                        <Text style={[styles.genre]}>{cleanEvent.address}, {cleanEvent.city}</Text>
                     </View>
                     <View style={{flex: 1, margin: 25}}>
                         <MapView
@@ -130,12 +118,12 @@ export default function SingleEvent({route, dimensions}) {
                                     latitude: parseFloat(event._embedded.venues[0].location.latitude),
                                     longitude: parseFloat(event._embedded.venues[0].location.longitude)
                                 }}
-                                title={event._embedded.attractions[0].name}
-                                description={event.name}
+                                title={cleanEvent.artist}
+                                description={cleanEvent.eventName}
                             >
                                 <Callout>
                                     <View>
-                                        <Text>{event._embedded.attractions[0].name}</Text>
+                                        <Text>{cleanEvent.artist}</Text>
                                     </View>
                                 </Callout>
                             </Marker>

@@ -3,8 +3,9 @@ import {Typography} from "../../styles/index";
 import {Text, View, StyleSheet, Pressable} from "react-native";
 import fonts from "../../styles/variables/fonts";
 import {RFValue} from "react-native-responsive-fontsize";
+import tokenAuthentication from "../../models/tokenAuthentication";
 
-export default function Header({dimensions, navigation}) {
+export default function Header({dimensions, navigation, isLoggedIn, setIsLoggedIn}) {
     const styles = StyleSheet.create({
         headerContainer: {
             backgroundColor: colors.blue,
@@ -45,22 +46,48 @@ export default function Header({dimensions, navigation}) {
         }
     });
 
+    async function doLogout () {
+        await tokenAuthentication.logout();
+        setIsLoggedIn(false);
+    }
+
+    function renderLogInOut () {
+        if (isLoggedIn) {
+            return (
+                <View style={styles.belowLogoContainer}>
+                    <Text style={styles.belowLogo}>Välkommen till MusicFinder!</Text>
+                    <Pressable
+                        onPress={() => {
+                            doLogout();
+                        }}
+                    >
+                        <Text style={styles.signIn}>Logga ut</Text>
+                    </Pressable>
+
+                </View>
+            )
+        }
+        return (
+            <View style={styles.belowLogoContainer}>
+                <Text style={styles.belowLogo}>Har du redan ett konto?</Text>
+                <Pressable
+                    onPress={() => {
+                        navigation.navigate("Mina sidor")
+                    }}
+                >
+                    <Text style={styles.signIn}>Logga in</Text>
+                </Pressable>
+
+            </View>
+        )
+    }
+
     return (
         <View style={styles.headerContainer}>
             <View style={styles.logoContainer}>
                 <Text style={styles.logo}>musicfinder<Text style={styles.registered}> ®</Text></Text>
             </View>
-            <View style={styles.belowLogoContainer}>
-                <Text style={styles.belowLogo}>Already have tickets?</Text>
-                <Pressable
-                    onPress={() => {
-                        navigation.navigate("Logga in")
-                    }}
-                >
-                    <Text style={styles.signIn}>Sign in</Text>
-                </Pressable>
-
-            </View>
+            {renderLogInOut()}
         </View>
     )
 }

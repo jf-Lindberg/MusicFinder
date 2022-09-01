@@ -1,18 +1,16 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Text} from 'react-native';
 
-import HomeScreen from "./HomeScreen";
-import ArtistEvents from "../Event/ArtistEvents";
 import colors from "../../styles/variables/colors";
 import SingleEvent from "../Event/SingleEvent";
 import HeaderPressableHeart from "../HeaderPressableHeart";
-import { RouteProp } from '@react-navigation/core';
-import { ParamListBase } from '@react-navigation/routers';
+import {RouteProp} from "@react-navigation/core";
+import {ParamListBase} from "@react-navigation/routers";
+import {Text} from "react-native";
+import MapViewOfAllEvents from "./MapViewOfAllEvents";
 
 const Stack = createNativeStackNavigator();
 
-
-export default function HomeScreenNavigation({allEvents, dimensions, isLoggedIn, setIsLoggedIn}) {
+export default function MapViewNavigation({allEvents, dimensions, isLoggedIn}) {
     function headerRightContent(route: RouteProp<ParamListBase, "Single">) {
         if (isLoggedIn === null || isLoggedIn === false) {
             return () => <Text></Text>;
@@ -22,9 +20,10 @@ export default function HomeScreenNavigation({allEvents, dimensions, isLoggedIn,
         )
 
     }
+    console.log(allEvents.length);
 
     return (
-        <Stack.Navigator initialRouteName="Lista"
+        <Stack.Navigator initialRouteName="Map"
                          screenOptions={{
                              headerTitleStyle: {
                                  color: colors.bg
@@ -32,31 +31,22 @@ export default function HomeScreenNavigation({allEvents, dimensions, isLoggedIn,
                              headerTintColor: colors.bg
                          }}
         >
-            <Stack.Screen name="Home"
-                          options={{
-                              headerShown: false,
-                          }}
-            >
-                {(screenProps) => <HomeScreen {...screenProps} allEvents={allEvents} dimensions={dimensions} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}
-            </Stack.Screen>
-            <Stack.Screen name="Evenemang"
-                          options={({route}) => ({
-                              title: route.params.name,
-                              headerTransparent: true,
-                              headerBackTitle: ''
+            <Stack.Screen name="Map"
+                          options={ ({route}) => ({
+                              headerShown: false
                           })}
             >
-                {(screenProps) => <ArtistEvents dimensions={dimensions} {...screenProps}/>}
+                {(screenProps) => <MapViewOfAllEvents {...screenProps} dimensions={dimensions} allEvents={allEvents}/>}
             </Stack.Screen>
             <Stack.Screen name="Single"
-                          options={({route}) => ({
+                          options={ ({route}) => ({
                               title: route.params.name,
                               headerTransparent: true,
                               headerBackTitle: '',
                               headerRight: headerRightContent(route)
                           })}
             >
-                {(screenProps) => <SingleEvent dimensions={dimensions} {...screenProps}/>}
+                {(screenProps) => <SingleEvent {...screenProps} dimensions={dimensions} isLoggedIn={isLoggedIn}/>}
             </Stack.Screen>
         </Stack.Navigator>
     );

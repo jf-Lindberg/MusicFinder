@@ -7,6 +7,8 @@ import {RFValue} from "react-native-responsive-fontsize";
 import RelatedEvents from "./RelatedEvents";
 import spotifyApiConnect from "../../models/spotifyApiConnect";
 import MapViewOfEvents from "./MapViewOfEvents";
+import generateUserFriendlyEvent from "../../models/generateUserFriendlyEvent";
+import {FontAwesome} from "@expo/vector-icons";
 
 export default function ArtistEvents({route, dimensions, navigation}) {
     const styles = StyleSheet.create({
@@ -75,10 +77,7 @@ export default function ArtistEvents({route, dimensions, navigation}) {
     const [artistLink, setArtistLink] = useState(null);
     const [bottomContent, setBottomContent] = useState<number>(0);
 
-    const artistImage = {
-        uri: `${getEventData.getBestImage(event)}`
-    }
-    const genre = getEventData.getMainGenre(event);
+    const cleanEvent = generateUserFriendlyEvent.create(event);
     const artist = getEventData.getArtist(event);
 
     async function getSpotifyLink() {
@@ -98,7 +97,7 @@ export default function ArtistEvents({route, dimensions, navigation}) {
             <View style={styles.backgroundImageContainer}>
                 <ImageBackground
                     style={styles.backgroundImage}
-                    source={artistImage}
+                    source={cleanEvent.artistImage}
                     blurRadius={11}
                     resizeMode='cover'
                 >
@@ -106,11 +105,11 @@ export default function ArtistEvents({route, dimensions, navigation}) {
                         <View style={styles.artistInfoContainer}>
                             <Image
                                 style={styles.artistImage}
-                                source={artistImage}
+                                source={cleanEvent.artistImage}
                                 resizeMode="cover"
                             />
-                            <Text style={styles.genre}>{genre}</Text>
-                            <Text style={styles.artist}>{artist}</Text>
+                            <Text style={styles.genre}>{cleanEvent.genre}</Text>
+                            <Text style={styles.artist}>{cleanEvent.artist}</Text>
                         </View>
                     </View>
                     <View style={styles.navBar}>
@@ -133,7 +132,7 @@ export default function ArtistEvents({route, dimensions, navigation}) {
                             onPress={() => {
                                 Linking.openURL(`${artistLink}`).then(r => 'ignored');
                             }}>
-                            <Text style={styles.navItem}>Lyssna på spotify</Text>
+                            <FontAwesome name="spotify" size={24} color="white" style={{marginLeft: dimensions.screen.width * 0.03}}/>
                         </Pressable>
                     </View>
                 </ImageBackground>

@@ -1,5 +1,5 @@
 import {Text, Button, ScrollView} from "react-native";
-import {musicEvent} from "../interface/event";
+import {musicEvent} from "../../interface/event";
 import {useState} from "react";
 import SearchBar from "./SearchBar";
 

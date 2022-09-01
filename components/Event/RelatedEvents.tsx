@@ -5,6 +5,7 @@ import {musicEvent} from "../../interface/event";
 import fonts from "../../styles/variables/fonts";
 import {RFValue} from "react-native-responsive-fontsize";
 import colors from "../../styles/variables/colors";
+import generateUserFriendlyEvent from "../../models/generateUserFriendlyEvent";
 
 export default function RelatedEvents({artist, dimensions, navigation}) {
     const styles = StyleSheet.create({
@@ -95,37 +96,27 @@ export default function RelatedEvents({artist, dimensions, navigation}) {
 
     const theEvents = events
         .map((event: musicEvent, index: number) => {
-            const eventName = event.name;
-            const city = event._embedded.venues[0].city.name;
-            let address = '';
-            try {
-                address = event._embedded.venues[0].address.line1;
-            } catch (e) {
-                // ...
-            }
-            const date = new Date(event.dates.start.localDate);
-            const month = date.toLocaleString('default', {month: 'short'});
-            const day = date.toLocaleString('default', {day: 'numeric'});
-            const weekday = date.toLocaleString('default', {weekday: 'short'});
+            const cleanEvent = generateUserFriendlyEvent.create(event);
+
             return (
                 <Pressable
                     key={event.id}
                     onPress={() => {
                         navigation.navigate('Single', {
                             event: event,
-                            name: `${event._embedded.attractions[0].name} - ${city} - ${month} ${day}`
+                            name: `${cleanEvent.artist} - ${cleanEvent.city}`
                         })
                     }}
                 >
                     <View key={index} style={styles.eventContainer}>
                         <View style={styles.dateContainer}>
-                            <Text style={styles.month}>{month}</Text>
-                            <Text style={styles.day}>{day}</Text>
+                            <Text style={styles.month}>{cleanEvent.month}</Text>
+                            <Text style={styles.day}>{cleanEvent.day}</Text>
                         </View>
                         <View>
-                            <Text style={styles.weekday}>{weekday}</Text>
-                            <Text style={styles.city}>{city} {'\u2022'} {address}</Text>
-                            <Text style={styles.eventName}>{eventName}</Text>
+                            <Text style={styles.weekday}>{cleanEvent.weekday}</Text>
+                            <Text style={styles.city}>{cleanEvent.city} {'\u2022'} {cleanEvent.address}</Text>
+                            <Text style={styles.eventName}>{cleanEvent.eventName}</Text>
                         </View>
                     </View>
                 </Pressable>

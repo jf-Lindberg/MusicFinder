@@ -7,12 +7,11 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 import {Ionicons} from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import {musicEvent} from "./interface/event";
 
-import EventListNavigation from './components/EventListNavigation';
 import UserNavigation from "./components/User/UserNavigation";
-import SavedEvents from "./components/User/SavedEvents";
 import checkLoggedIn from "./hooks/checkLoggedIn";
 
 import getEvents from "./hooks/getEvents";
@@ -21,15 +20,20 @@ import getFonts from "./hooks/loadFonts";
 import colors from "./styles/variables/colors";
 import HomeScreenNavigation from "./components/Home/HomeScreenNavigation";
 import getUserCoords from "./hooks/getUserCoords";
+import SavedEventsNavigation from "./components/User/SavedEventsNavigation";
+import MapViewNavigation from "./components/MapView/MapViewNavigation";
 
 const routeIcons: { [key: string]: string } = {
     "Hem": "home",
     "Sök": "search",
-    "Kartvy": "map-outline"
+    "Kartvy": "map-outline",
+    "Mina sidor": "menu"
 };
 
 const Tab = createBottomTabNavigator();
 SplashScreen.preventAutoHideAsync().then(r => 'ignored');
+
+// @refresh reset
 
 export default function App() {
     const window = Dimensions.get("window");
@@ -64,12 +68,14 @@ export default function App() {
             try {
                 const LOCATION = await getUserCoords();
                 setAllEvents(await getEvents('', LOCATION)); // Fixing this signature error will crash app
-            } catch(e) {
+            } catch (e) {
                 console.warn(e);
             }
         }
 
         loadLocation().then(r => 'ignored');
+
+        return;
     }, [])
 
 
@@ -103,27 +109,29 @@ export default function App() {
                     // @ts-ignore
                     return <Ionicons name={iconName} size={size} color={color}/>;
                 },
-                tabBarActiveTintColor: 'blue',
-                tabBarInactiveTintColor: 'gray',
-                headerShown: false
+                tabBarActiveTintColor: '#0C8DF3',
+                tabBarInactiveTintColor: '#838384',
+                headerShown: false,
+                tabBarStyle: {
+                    height: dimensions.screen.height * 0.10,
+                    backgroundColor: '#20262d'
+                }
             })}
             >
                 <Tab.Screen name="Hem">
-                    {() => <HomeScreenNavigation allEvents={allEvents} dimensions={dimensions}/>}
-                </Tab.Screen>
-                <Tab.Screen name="Sök">
-                    {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents}
-                                                isLoggedIn={isLoggedIn}/>}
+                    {() => <HomeScreenNavigation allEvents={allEvents} dimensions={dimensions} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}
                 </Tab.Screen>
                 <Tab.Screen name="Kartvy">
-                    {() => <MapViewNavigation allEvents={allEvents} setAllEvents={setAllEvents}
-                                              isLoggedIn={isLoggedIn}/>}
+                    {() => <MapViewNavigation
+                        allEvents={allEvents}
+                        isLoggedIn={isLoggedIn}
+                        dimensions={dimensions}/>}
                 </Tab.Screen>
                 {isLoggedIn ?
                     <Tab.Screen name="Mina sidor">
-                        {() => <SavedEvents setIsLoggedIn={setIsLoggedIn}/>}
+                        {() => <SavedEventsNavigation dimensions={dimensions} setIsLoggedIn={setIsLoggedIn}/>}
                     </Tab.Screen> :
-                    <Tab.Screen name="Logga in">
+                    <Tab.Screen name="Mina sidor">
                         {() => <UserNavigation setIsLoggedIn={setIsLoggedIn} dimensions={dimensions}/>}
                     </Tab.Screen>
                 }

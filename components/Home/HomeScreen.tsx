@@ -7,7 +7,7 @@ import colors from "../../styles/variables/colors";
 import fonts from "../../styles/variables/fonts";
 import {RFValue} from "react-native-responsive-fontsize";
 
-export default function HomeScreen({allEvents, dimensions, navigation}) {
+export default function HomeScreen({allEvents, dimensions, navigation, isLoggedIn, setIsLoggedIn}) {
     const styles = StyleSheet.create({
         divider: {
             marginTop: dimensions.screen.height * 0.05
@@ -41,7 +41,7 @@ export default function HomeScreen({allEvents, dimensions, navigation}) {
                 }}
             >
                 <ScrollView>
-                    <Header dimensions={dimensions} navigation={navigation}/>
+                    <Header dimensions={dimensions} navigation={navigation} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
                     <View style={{marginTop: -dimensions.screen.height * 0.033}}>
                         <EventPressable event={allEvents[0]} dimensions={dimensions} imageScale={{width: 1, height: 1}}
                                         navigation={navigation}/>

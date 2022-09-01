@@ -4,8 +4,6 @@ export default {
     findArtist: async function findArtist(artistName: string) {
         let cleanedArtistName = artistName.replace(/[^\w\s]/gi, '');
         let encodedArtistName = encodeURI(cleanedArtistName);
-        console.log('ENCODED NAME');
-        console.log(encodedArtistName);
         let authOptions = {
             method: 'POST',
             body: 'grant_type=client_credentials&client_id=' + Spotify.id + '&client_secret=' + Spotify.secret,
@@ -39,6 +37,5 @@ export default {
 
         console.log(`Spotify API: ${artistName} found. Returning response.`);
         return response;
-    },
-    /*getArtistDescription: async function getArtistDescription()*/
+    }
 }

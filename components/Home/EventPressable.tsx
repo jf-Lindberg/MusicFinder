@@ -42,6 +42,8 @@ export default function EventPressable({event, dimensions, imageScale, navigatio
         });
     };
 
+    const img = getEventData.getBestImage(event);
+
     return (
         <Pressable
             onPress={() => {
@@ -54,7 +56,7 @@ export default function EventPressable({event, dimensions, imageScale, navigatio
                 <Image
                     style={styles.artistImage}
                     source={{
-                        uri: getEventData.getBestImage(event),
+                        uri: img,
                     }}
                 />
             </View>
