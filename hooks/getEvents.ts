@@ -4,7 +4,7 @@ import Geohash from "latlon-geohash";
 
 const DEFAULT_GEOPOINT = Geohash.encode(<number>59.329249546700744, <number>18.068613228289472, 6);
 
-export default async function getEvents(searchTerm: string = '', geoPoint = DEFAULT_GEOPOINT) {
+export default async function getEvents(searchTerm: string = '', geoPoint: string | { coords: { latitude: number; longitude: number; }; } = DEFAULT_GEOPOINT) {
     let events = await ticketMasterApiConnect.findEvents(searchTerm, geoPoint);
     return events.filter((event: musicEvent) => {
         try {

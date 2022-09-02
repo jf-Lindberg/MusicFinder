@@ -5,10 +5,12 @@ import {RFValue} from "react-native-responsive-fontsize";
 import MapView, {Callout, Marker} from "react-native-maps";
 import {FontAwesome} from '@expo/vector-icons';
 import generateUserFriendlyEvent from "../../models/generateUserFriendlyEvent";
+import {useState} from "react";
+import spotifyApiConnect from "../../models/spotifyApiConnect";
+import MapViewComp from "../MapViewComp";
 
 export default function SingleEvent({route, dimensions, navigation, isLoggedIn}) {
     const {event} = route.params;
-    const {artistLink} = route.params;
 
     const styles = StyleSheet.create({
         backgroundImage: {
@@ -22,7 +24,7 @@ export default function SingleEvent({route, dimensions, navigation, isLoggedIn})
         },
         artistInfoContainer: {
             marginTop: dimensions.screen.height * 0.13,
-            marginLeft: dimensions.screen.width * 0.07,
+            alignItems: 'center'
         },
         artistImage: {
             width: dimensions.screen.width * 0.72,
@@ -73,8 +75,22 @@ export default function SingleEvent({route, dimensions, navigation, isLoggedIn})
             borderRadius: 15
         }
     });
+    const [artistLink, setArtistLink] = useState(null);
 
     const cleanEvent = generateUserFriendlyEvent.create(event);
+
+    async function getSpotifyLink() {
+        try {
+            await spotifyApiConnect.findArtist(cleanEvent.artist).then(r => {
+                setArtistLink(r.tracks.items[0].artists[0].external_urls.spotify);
+            })
+        } catch (e) {
+            setArtistLink(null);
+        }
+    }
+
+    getSpotifyLink().then(r => 'ignored');
+
 
     return (
         <View style={{flex: 1}}>
@@ -85,49 +101,31 @@ export default function SingleEvent({route, dimensions, navigation, isLoggedIn})
                 resizeMode='cover'
             >
                 <View style={styles.darkenBackground}>
-                    <View style={styles.artistInfoContainer}>
-                        <Image
-                            style={styles.artistImage}
-                            source={cleanEvent.artistImage}
-                            resizeMode="cover"
-                        />
-
-                        <View style={{flexDirection: 'row'}}>
-                            <View>
-                                <Text style={styles.artist}>{cleanEvent.artist}</Text>
-                                <Text
-                                    style={styles.genre}>{cleanEvent.day}/{cleanEvent.monthNumeric}/{cleanEvent.year}</Text>
-                            </View>
+                    <Pressable
+                        onPress={() => {
+                            Linking.openURL(`${artistLink}`).then(r => 'ignored');
+                        }}
+                        style={styles.artistInfoContainer}>
+                        <View>
+                            <Image
+                                style={styles.artistImage}
+                                source={cleanEvent.artistImage}
+                                resizeMode="cover"
+                            />
+                            <FontAwesome name="spotify" size={60} color="white" style={{marginLeft: dimensions.screen.width * 0.03, alignSelf: 'flex-end', marginTop: -dimensions.screen.height * 0.075, marginRight: dimensions.screen.width * 0.05}}/>
                         </View>
-                        <Text style={[styles.genre]}>{cleanEvent.address}, {cleanEvent.city}</Text>
+                    </Pressable>
+                    <View style={{flexDirection: 'row', marginLeft: dimensions.screen.width * 0.07, marginTop: dimensions.screen.height * 0.03}}>
+                        <View>
+                            <Text style={styles.artist}>{cleanEvent.artist}</Text>
+                            <Text
+                                style={styles.genre}>{cleanEvent.day}/{cleanEvent.monthNumeric}/{cleanEvent.year}</Text>
+                            <Text style={[styles.genre]}>{cleanEvent.address}, {cleanEvent.city}</Text>
+                        </View>
                     </View>
+
                     <View style={{flex: 1, margin: 25}}>
-                        <MapView
-                            style={styles.map}
-                            userInterfaceStyle={'dark'}
-                            initialRegion={{
-                                latitude: parseFloat(event._embedded.venues[0].location.latitude),
-                                longitude: parseFloat(event._embedded.venues[0].location.longitude),
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421,
-                            }}
-                        >
-                            <Marker
-                                key={event.id}
-                                coordinate={{
-                                    latitude: parseFloat(event._embedded.venues[0].location.latitude),
-                                    longitude: parseFloat(event._embedded.venues[0].location.longitude)
-                                }}
-                                title={cleanEvent.artist}
-                                description={cleanEvent.eventName}
-                            >
-                                <Callout>
-                                    <View>
-                                        <Text>{cleanEvent.artist}</Text>
-                                    </View>
-                                </Callout>
-                            </Marker>
-                        </MapView>
+                        <MapViewComp events={[event]} navigation={navigation} dimensions={dimensions} style="single"/>
                     </View>
                 </View>
             </ImageBackground>

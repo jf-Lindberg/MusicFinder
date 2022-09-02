@@ -6,7 +6,7 @@ import HeaderPressableHeart from "../HeaderPressableHeart";
 import {RouteProp} from "@react-navigation/core";
 import {ParamListBase} from "@react-navigation/routers";
 import {Text} from "react-native";
-import MapViewOfAllEvents from "./MapViewOfAllEvents";
+import MapViewComp from "../MapViewComp";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,7 +36,7 @@ export default function MapViewNavigation({allEvents, dimensions, isLoggedIn}) {
                               headerShown: false
                           })}
             >
-                {(screenProps) => <MapViewOfAllEvents {...screenProps} dimensions={dimensions} allEvents={allEvents}/>}
+                {(screenProps) => <MapViewComp {...screenProps} events={allEvents} dimensions={dimensions}/>}
             </Stack.Screen>
             <Stack.Screen name="Single"
                           options={ ({route}) => ({

@@ -10,7 +10,7 @@ import colors from "../../styles/variables/colors";
 
 const Stack = createNativeStackNavigator();
 
-export default function EventListNavigation({allEvents, setAllEvents, isLoggedIn, dimensions}) {
+export default function EventListNavigation({allEvents, setAllEvents, isLoggedIn, dimensions, location}) {
     function headerRightContent(route: RouteProp<ParamListBase, "Single">) {
         if (isLoggedIn === null || isLoggedIn === false) {
             return () => <Text></Text>;
@@ -22,12 +22,19 @@ export default function EventListNavigation({allEvents, setAllEvents, isLoggedIn
     }
 
     return (
-        <Stack.Navigator initialRouteName="Lista" screenOptions={{}}>
+        <Stack.Navigator initialRouteName="Lista"
+                         screenOptions={{
+            headerTitleStyle: {
+                color: colors.bg
+            },
+            headerTintColor: colors.bg
+        }}>
             <Stack.Screen name="Lista"
                           options={{
+                              headerShown: false
                           }}
             >
-                {(screenProps) => <EventList allEvents={allEvents} setAllEvents={setAllEvents} {...screenProps}/>}
+                {(screenProps) => <EventList {...screenProps} allEvents={allEvents} setAllEvents={setAllEvents} location={location} dimensions={dimensions} isLoggedIn={isLoggedIn}/>}
             </Stack.Screen>
             <Stack.Screen name="Single"
                           options={({route}) => ({

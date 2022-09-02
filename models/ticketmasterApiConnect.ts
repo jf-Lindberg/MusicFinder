@@ -6,7 +6,7 @@ import getGeopoint from "../constants/Location";
 const DEFAULT_GEOPOINT = Geohash.encode(<number>59.329249546700744, <number>18.068613228289472, 6);
 
 export default {
-    findEvents: async function (searchTerm: string = '', geoPoint = DEFAULT_GEOPOINT) {
+    findEvents: async function (searchTerm: string = '', geoPoint: string | { coords: { latitude: number; longitude: number; }; } = DEFAULT_GEOPOINT) {
         const encodedSearchTerm = encodeURIComponent(searchTerm);
         const url = Ticketmaster.url + '/events?keyword=' + encodedSearchTerm + '&geoPoint=' + geoPoint + '&size=200&classificationName=[music]&sort=distance,asc&apikey=' + Ticketmaster.key;
         console.log('Ticketmaster API: Fetching search results...');

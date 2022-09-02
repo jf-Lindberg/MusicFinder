@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ImageBackground, StyleSheet, Text, View, Image, FlatList, Pressable, Linking} from "react-native";
 import getEventData from "../../models/getEventData";
 import fonts from "../../styles/variables/fonts";
@@ -9,6 +9,8 @@ import spotifyApiConnect from "../../models/spotifyApiConnect";
 import MapViewOfEvents from "./MapViewOfEvents";
 import generateUserFriendlyEvent from "../../models/generateUserFriendlyEvent";
 import {FontAwesome} from "@expo/vector-icons";
+import {musicEvent} from "../../interface/event";
+import MapViewComp from "../MapViewComp";
 
 export default function ArtistEvents({route, dimensions, navigation}) {
     const styles = StyleSheet.create({
@@ -76,9 +78,24 @@ export default function ArtistEvents({route, dimensions, navigation}) {
 
     const [artistLink, setArtistLink] = useState(null);
     const [bottomContent, setBottomContent] = useState<number>(0);
+    const [events, setEvents] = useState<Array<musicEvent>>([]);
 
     const cleanEvent = generateUserFriendlyEvent.create(event);
     const artist = getEventData.getArtist(event);
+
+    useEffect(() => {
+        async function getEvents() {
+            try {
+                await getEventData.getAttractionEvents(artist)
+                    .then(r => setEvents(r));
+            } catch (e) {
+                console.error(e)
+            }
+
+        }
+
+        getEvents().then(r => 'ignored');
+    }, []);
 
     async function getSpotifyLink() {
         try {
@@ -139,7 +156,7 @@ export default function ArtistEvents({route, dimensions, navigation}) {
             </View>
             <View style={styles.bottomContent}>
                 {bottomContent === 0 && <RelatedEvents artist={artist} dimensions={dimensions} navigation={navigation}/>}
-                {bottomContent === 1 && <MapViewOfEvents artist={artist} dimensions={dimensions} navigation={navigation}/>}
+                {bottomContent === 1 && <MapViewComp events={events} dimensions={dimensions} navigation={navigation}/>}
             </View>
         </View>
     )

@@ -7,7 +7,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 import {Ionicons} from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import {musicEvent} from "./interface/event";
 
@@ -22,6 +21,8 @@ import HomeScreenNavigation from "./components/Home/HomeScreenNavigation";
 import getUserCoords from "./hooks/getUserCoords";
 import SavedEventsNavigation from "./components/User/SavedEventsNavigation";
 import MapViewNavigation from "./components/MapView/MapViewNavigation";
+import EventListNavigation from "./components/SearchView/EventListNavigation";
+import Geohash from "latlon-geohash";
 
 const routeIcons: { [key: string]: string } = {
     "Hem": "home",
@@ -36,10 +37,12 @@ SplashScreen.preventAutoHideAsync().then(r => 'ignored');
 // @refresh reset
 
 export default function App() {
+    const DEFAULT_GEOPOINT = Geohash.encode(59.329249546700744,18.068613228289472, 6);
     const window = Dimensions.get("window");
     const screen = Dimensions.get("screen");
     const standardScreenHeight = 896;
     const [dimensions, setDimensions] = useState({window, screen, standardScreenHeight});
+    const [location, setLocation] = useState<string | { coords: { latitude: number; longitude: number; }; }>(DEFAULT_GEOPOINT);
     const [allEvents, setAllEvents] = useState<Array<musicEvent>>([]);
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
     const [appIsReady, setAppIsReady] = useState<Boolean>(false);
@@ -67,7 +70,8 @@ export default function App() {
         async function loadLocation() {
             try {
                 const LOCATION = await getUserCoords();
-                setAllEvents(await getEvents('', LOCATION)); // Fixing this signature error will crash app
+                setAllEvents(await getEvents('', LOCATION));
+                setLocation(LOCATION);
             } catch (e) {
                 console.warn(e);
             }
@@ -75,7 +79,7 @@ export default function App() {
 
         loadLocation().then(r => 'ignored');
 
-        return;
+        return setLocation(DEFAULT_GEOPOINT);
     }, [])
 
 
@@ -120,6 +124,9 @@ export default function App() {
             >
                 <Tab.Screen name="Hem">
                     {() => <HomeScreenNavigation allEvents={allEvents} dimensions={dimensions} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}
+                </Tab.Screen>
+                <Tab.Screen name="Sök">
+                    {() => <EventListNavigation allEvents={allEvents} setAllEvents={setAllEvents} dimensions={dimensions} isLoggedIn={isLoggedIn} location={location}/>}
                 </Tab.Screen>
                 <Tab.Screen name="Kartvy">
                     {() => <MapViewNavigation

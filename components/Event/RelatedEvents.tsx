@@ -92,6 +92,8 @@ export default function RelatedEvents({artist, dimensions, navigation}) {
         }
 
         getEvents().then(r => 'ignored');
+
+        return;
     }, []);
 
     const theEvents = events
