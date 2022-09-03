@@ -80,14 +80,15 @@ export default function ArtistEvents({route, dimensions, navigation}) {
     const [bottomContent, setBottomContent] = useState<number>(0);
     const [events, setEvents] = useState<Array<musicEvent>>([]);
 
-    const cleanEvent = generateUserFriendlyEvent.create(event);
-    const artist = getEventData.getArtist(event);
+    const artist = event.artist;
 
     useEffect(() => {
         async function getEvents() {
             try {
                 await getEventData.getAttractionEvents(artist)
-                    .then(r => setEvents(r));
+                    .then(r => setEvents(r.map((event: musicEvent) => {
+                        return generateUserFriendlyEvent.create(event);
+                    })));
             } catch (e) {
                 console.error(e)
             }
@@ -114,7 +115,7 @@ export default function ArtistEvents({route, dimensions, navigation}) {
             <View style={styles.backgroundImageContainer}>
                 <ImageBackground
                     style={styles.backgroundImage}
-                    source={cleanEvent.artistImage}
+                    source={event.artistImage}
                     blurRadius={11}
                     resizeMode='cover'
                 >
@@ -122,11 +123,11 @@ export default function ArtistEvents({route, dimensions, navigation}) {
                         <View style={styles.artistInfoContainer}>
                             <Image
                                 style={styles.artistImage}
-                                source={cleanEvent.artistImage}
+                                source={event.artistImage}
                                 resizeMode="cover"
                             />
-                            <Text style={styles.genre}>{cleanEvent.genre}</Text>
-                            <Text style={styles.artist}>{cleanEvent.artist}</Text>
+                            <Text style={styles.genre}>{event.genre}</Text>
+                            <Text style={styles.artist}>{event.artist}</Text>
                         </View>
                     </View>
                     <View style={styles.navBar}>

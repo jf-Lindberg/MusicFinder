@@ -2,6 +2,7 @@ import {View, Text, TextInput, Button, StyleSheet, Pressable} from "react-native
 import colors from "../../styles/variables/colors";
 import fonts from "../../styles/variables/fonts";
 import {Divider} from "@react-native-material/core";
+import {RFValue} from "react-native-responsive-fontsize";
 
 export default function UserForm({auth, setAuth, title, submit, navigation, logout, dimensions}) {
     const styles = StyleSheet.create({
@@ -37,11 +38,30 @@ export default function UserForm({auth, setAuth, title, submit, navigation, logo
             color: colors.bg,
             fontFamily: fonts.reg600,
             textDecorationLine: 'underline'
-        }
+        },
+        regsub: {
+            color: colors.bg,
+            fontSize: RFValue(18, dimensions.standardScreenHeight),
+            fontFamily: fonts.reg400,
+            marginTop: dimensions.screen.height * 0.05,
+            marginBottom: dimensions.screen.height * 0.01
+        },
+        logoContainer: {
+            marginBottom: dimensions.screen.height * 0.05
+        },
+        logo: {
+            fontFamily: fonts.italic900,
+            fontSize: RFValue(30, dimensions.standardScreenHeight),
+            color: colors.bg,
+            lineHeight: 31
+        },
     })
 
     return (
         <View style={styles.backgroundContainer}>
+            <View style={styles.logoContainer}>
+                <Text style={styles.logo}>musicfinder</Text>
+            </View>
             <View>
                 <Text style={styles.label}>E-mail</Text>
                 <TextInput
@@ -77,13 +97,20 @@ export default function UserForm({auth, setAuth, title, submit, navigation, logo
                 </Pressable>
             </View>
             {title === "Logga in" &&
-                <Pressable
-                    onPress={() => {
-                        navigation.navigate('Register');
-                    }}
-                >
-                    <Text style={styles.register}>Registrera istället</Text>
-                </Pressable>
+                <View>
+                    <Divider style={{marginTop: dimensions.screen.height * 0.05}} leadingInset={-200}
+                             trailingInset={-200} color={colors.bg}/>
+                    <View style={{alignItems: 'center'}}>
+                        <Text style={styles.regsub}>Saknar du ett konto?</Text>
+                        <Pressable
+                            onPress={() => {
+                                navigation.navigate('Register');
+                            }}
+                        >
+                            <Text style={styles.register}>Registrera istället</Text>
+                        </Pressable>
+                    </View>
+                </View>
             }
         </View>
     );

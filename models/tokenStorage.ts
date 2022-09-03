@@ -9,6 +9,8 @@ export default {
             };
             const jsonValue = JSON.stringify(tokenAndDate);
 
+            console.log(token);
+
             await AsyncStorage.setItem('@token', jsonValue);
         } catch (e) {
             // saving error

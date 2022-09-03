@@ -3,6 +3,7 @@ import getEventData from "../../models/getEventData";
 import fonts from "../../styles/variables/fonts";
 import colors from "../../styles/variables/colors";
 import {RFValue} from "react-native-responsive-fontsize";
+import generateUserFriendlyEvent from "../../models/generateUserFriendlyEvent";
 
 export default function EventPressable({event, dimensions, imageScale, navigation}) {
     const scale = {
@@ -38,11 +39,9 @@ export default function EventPressable({event, dimensions, imageScale, navigatio
     const goToEvent = async () => {
         navigation.navigate('Evenemang', {
             event: event,
-            name: event._embedded.attractions[0].name
+            name: event.name
         });
     };
-
-    const img = getEventData.getBestImage(event);
 
     return (
         <Pressable
@@ -55,12 +54,10 @@ export default function EventPressable({event, dimensions, imageScale, navigatio
             >
                 <Image
                     style={styles.artistImage}
-                    source={{
-                        uri: img,
-                    }}
+                    source={event.artistImage}
                 />
             </View>
-            <Text style={styles.headlinerText}>{event._embedded.attractions[0].name}</Text>
+            <Text style={styles.headlinerText}>{event.artist}</Text>
         </Pressable>
     )
 

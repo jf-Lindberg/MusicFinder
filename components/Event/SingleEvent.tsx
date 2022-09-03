@@ -77,11 +77,9 @@ export default function SingleEvent({route, dimensions, navigation, isLoggedIn})
     });
     const [artistLink, setArtistLink] = useState(null);
 
-    const cleanEvent = generateUserFriendlyEvent.create(event);
-
     async function getSpotifyLink() {
         try {
-            await spotifyApiConnect.findArtist(cleanEvent.artist).then(r => {
+            await spotifyApiConnect.findArtist(event.artist).then(r => {
                 setArtistLink(r.tracks.items[0].artists[0].external_urls.spotify);
             })
         } catch (e) {
@@ -96,31 +94,34 @@ export default function SingleEvent({route, dimensions, navigation, isLoggedIn})
         <View style={{flex: 1}}>
             <ImageBackground
                 style={styles.backgroundImage}
-                source={cleanEvent.artistImage}
+                source={event.artistImage}
                 blurRadius={11}
                 resizeMode='cover'
             >
                 <View style={styles.darkenBackground}>
-                    <Pressable
-                        onPress={() => {
-                            Linking.openURL(`${artistLink}`).then(r => 'ignored');
-                        }}
+                    <View
                         style={styles.artistInfoContainer}>
                         <View>
                             <Image
                                 style={styles.artistImage}
-                                source={cleanEvent.artistImage}
+                                source={event.artistImage}
                                 resizeMode="cover"
                             />
-                            <FontAwesome name="spotify" size={60} color="white" style={{marginLeft: dimensions.screen.width * 0.03, alignSelf: 'flex-end', marginTop: -dimensions.screen.height * 0.075, marginRight: dimensions.screen.width * 0.05}}/>
+                            <Pressable
+                                onPress={() => {
+                                    Linking.openURL(`${artistLink}`).then(r => 'ignored');
+                                }}
+                            >
+                                <FontAwesome name="spotify" size={60} color="white" style={{marginLeft: dimensions.screen.width * 0.03, alignSelf: 'flex-end', marginTop: -dimensions.screen.height * 0.075, marginRight: dimensions.screen.width * 0.05}}/>
+                            </Pressable>
                         </View>
-                    </Pressable>
+                    </View>
                     <View style={{flexDirection: 'row', marginLeft: dimensions.screen.width * 0.07, marginTop: dimensions.screen.height * 0.03}}>
                         <View>
-                            <Text style={styles.artist}>{cleanEvent.artist}</Text>
+                            <Text style={styles.artist}>{event.artist}</Text>
                             <Text
-                                style={styles.genre}>{cleanEvent.day}/{cleanEvent.monthNumeric}/{cleanEvent.year}</Text>
-                            <Text style={[styles.genre]}>{cleanEvent.address}, {cleanEvent.city}</Text>
+                                style={styles.genre}>{event.day}/{event.monthNumeric}/{event.year}</Text>
+                            <Text style={[styles.genre]}>{event.address}, {event.city}</Text>
                         </View>
                     </View>
 

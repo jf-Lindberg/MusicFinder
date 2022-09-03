@@ -1,4 +1,4 @@
-# Om MusicFinder
+# MusicFinder
 
 ## Specifikation
 
@@ -14,9 +14,11 @@ MusicFinder använder sig
 av [Ticketmasters API](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/)
 för att hitta evenemang och information om dessa. När man sedan navigerar in i ett specifikt evenemang kallas
 [Spotifys API](https://developer.spotify.com/documentation/web-api/) för att hitta låtar relaterade till den artist som
-håller i evenemanget.
+håller i evenemanget. Autentisering sköts av Emil Folinos [Auth API](https://auth.emilfolino.se/documentation.html).
 
 ## Arkitektur
+
+Appen är byggd med ramverket React Native och 
 
 ### Vidareutveckling
 

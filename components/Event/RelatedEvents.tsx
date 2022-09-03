@@ -81,8 +81,12 @@ export default function RelatedEvents({artist, dimensions, navigation}) {
     useEffect(() => {
         async function getEvents() {
             try {
-                await getEventData.getAttractionEvents(artist)
-                    .then(r => setEvents(r));
+                const evts = await getEventData.getAttractionEvents(artist);
+                const cleanEvents = evts
+                    .map((event: musicEvent) => {
+                        return generateUserFriendlyEvent.create(event);
+                })
+                setEvents(cleanEvents);
             } catch (e) {
                 console.error(e)
             } finally {
@@ -98,27 +102,25 @@ export default function RelatedEvents({artist, dimensions, navigation}) {
 
     const theEvents = events
         .map((event: musicEvent, index: number) => {
-            const cleanEvent = generateUserFriendlyEvent.create(event);
-
             return (
                 <Pressable
                     key={event.id}
                     onPress={() => {
                         navigation.navigate('Single', {
                             event: event,
-                            name: `${cleanEvent.artist} - ${cleanEvent.city}`
+                            name: `${event.artist} - ${event.city}`
                         })
                     }}
                 >
                     <View key={index} style={styles.eventContainer}>
                         <View style={styles.dateContainer}>
-                            <Text style={styles.month}>{cleanEvent.month}</Text>
-                            <Text style={styles.day}>{cleanEvent.day}</Text>
+                            <Text style={styles.month}>{event.month}</Text>
+                            <Text style={styles.day}>{event.day}</Text>
                         </View>
                         <View>
-                            <Text style={styles.weekday}>{cleanEvent.weekday}</Text>
-                            <Text style={styles.city}>{cleanEvent.city} {'\u2022'} {cleanEvent.address}</Text>
-                            <Text style={styles.eventName}>{cleanEvent.eventName}</Text>
+                            <Text style={styles.weekday}>{event.weekday}</Text>
+                            <Text style={styles.city}>{event.city} {'\u2022'} {event.address}</Text>
+                            <Text style={styles.eventName}>{event.eventName}</Text>
                         </View>
                     </View>
                 </Pressable>

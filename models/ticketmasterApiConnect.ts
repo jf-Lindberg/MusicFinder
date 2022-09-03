@@ -16,10 +16,15 @@ export default {
                 console.error('Request failed', err)
             })
 
-        if (response.page.totalElements === 0) {
-            console.log('Ticketmaster API: Search failed. No events match that search term.');
-            throw new Error('No events match that search term');
+        try {
+            if (response.page.totalElements === 0) {
+                console.log('Ticketmaster API: Search failed. No events match that search term.');
+                throw new Error('No events match that search term');
+            }
+        } catch(e) {
+            console.log(e);
         }
+
 
         console.log('Ticketmaster API: Done loading. Events array length: ' + response._embedded.events.length);
         return await response._embedded.events;

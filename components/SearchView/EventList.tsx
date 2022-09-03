@@ -132,7 +132,6 @@ export default function EventList({allEvents, route, navigation, location, dimen
 
     const listOfEvents = events
         .map((event: musicEvent, index: number) => {
-            const cleanEvent = generateUserFriendlyEvent.create(event);
 
             return (
                 <Pressable
@@ -140,20 +139,20 @@ export default function EventList({allEvents, route, navigation, location, dimen
                     onPress={() => {
                         navigation.navigate('Single', {
                             event: event,
-                            name: `${cleanEvent.artist} - ${cleanEvent.city}`
+                            name: `${event.artist} - ${event.city}`
                         })
                     }}
                 >
                     {/* MAKE PRESSABLE BACKGROUND TO ARTIST IMAGE */}
                     <View key={index} style={styles.eventContainer}>
                         <View style={styles.dateContainer}>
-                            <Text style={styles.month}>{cleanEvent.month}</Text>
-                            <Text style={styles.day}>{cleanEvent.day}</Text>
+                            <Text style={styles.month}>{event.month}</Text>
+                            <Text style={styles.day}>{event.day}</Text>
                         </View>
                         <View style={styles.infoContainer}>
-                            <Text style={styles.weekday}>{cleanEvent.weekday}</Text>
-                            <Text style={styles.city}>{cleanEvent.city} {'\u2022'} {cleanEvent.address}</Text>
-                            <Text style={styles.eventName}>{cleanEvent.eventName}</Text>
+                            <Text style={styles.weekday}>{event.weekday}</Text>
+                            <Text style={styles.city}>{event.city} {'\u2022'} {event.address}</Text>
+                            <Text style={styles.eventName}>{event.eventName}</Text>
                         </View>
                         {isLoggedIn ? <View style={styles.heartContainer}>
                             <HeaderPressableHeart event={event} heartColor={colors.blue}/>

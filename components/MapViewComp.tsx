@@ -3,10 +3,8 @@ import {useEffect, useState} from "react";
 import * as Location from "expo-location";
 import MapView, {Callout, Marker} from "react-native-maps";
 import {musicEvent} from "../interface/event";
-import generateUserFriendlyEvent from "../models/generateUserFriendlyEvent";
 
 export default function MapViewComp({events, navigation, dimensions, style}) {
-    console.log(style);
     const defaultMapStyle = StyleSheet.create({
         map: {
             ...StyleSheet.absoluteFillObject
@@ -30,60 +28,75 @@ export default function MapViewComp({events, navigation, dimensions, style}) {
         }
     }, [])
 
-    const [locationMarker, setLocationMarker] = useState(null);
+    const [location, setLocation] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
-        (async () => {
+        let isMounted = true;
+        const userLocation = async () => {
             const {status} = await Location.requestForegroundPermissionsAsync();
-            if (status !== "granted") {
+            if (status !== "granted" && isMounted) {
                 setErrorMessage("Permission to access location was denied.");
                 return;
             }
 
             const currentLocation = await Location.getCurrentPositionAsync({});
 
-            setLocationMarker(<Marker
-                coordinate={{
-                    latitude: currentLocation.coords.latitude,
-                    longitude: currentLocation.coords.longitude
-                }}
-                title="Min plats"
-                image={require('../assets/marker-user.png')}
-            />)
-        })();
+            if (isMounted) {
+                setLocation({
+                        latitude: currentLocation.coords.latitude,
+                        longitude: currentLocation.coords.longitude
+                    })
+            }
+        }
+
+        userLocation().then(r => 'ignored');
+
+        return () => {
+            isMounted = false
+        }
     }, []);
 
     const markers = events
         .map((event: musicEvent, index: number) => {
-            const cleanEvent = generateUserFriendlyEvent.create(event);
-
             return (
                 <Marker
                     key={event.id}
                     coordinate={{
-                        latitude: parseFloat(event._embedded.venues[0].location.latitude),
-                        longitude: parseFloat(event._embedded.venues[0].location.longitude)
+                        latitude: parseFloat(event.location.latitude),
+                        longitude: parseFloat(event.location.longitude)
                     }}
-                    title={cleanEvent.artist}
-                    description={cleanEvent.eventName}
+                    title={event.artist}
+                    description={event.eventName}
                     image={require('../assets/marker-small.png')}
                 >
                     <Callout
                         onPress={() => {
                             navigation.navigate('Single', {
                                 event: event,
-                                name: cleanEvent.artist
+                                name: event.artist
                             });
                         }}
                     >
                         <View>
-                            <Text>{cleanEvent.artist}</Text>
+                            <Text>{event.artist}</Text>
                         </View>
                     </Callout>
                 </Marker>
             )
         })
+
+    const userMarker = () => {
+        if (location !== null) {
+            return (
+                <Marker
+                    coordinate={location}
+                    title="Min plats"
+                    image={require('../assets/marker-user.png')}
+                />
+            )
+        }
+    }
 
     return (
         <MapView
@@ -91,7 +104,7 @@ export default function MapViewComp({events, navigation, dimensions, style}) {
             userInterfaceStyle={'dark'}
         >
             {markers}
-            {locationMarker}
+            {userMarker()}
         </MapView>
     )
 }

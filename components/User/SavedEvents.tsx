@@ -134,7 +134,7 @@ export default function SavedEvents({dimensions, setIsLoggedIn}) {
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
-        await getEvents();
+        const evts = await getEvents();
         setRefreshing(false);
     }, []);
 
@@ -145,7 +145,7 @@ export default function SavedEvents({dimensions, setIsLoggedIn}) {
         const savedEvents = user.data
             .map((data: { artefact: string; }, index: number) => {
                 return JSON.parse(data.artefact);
-            })
+            });
 
         setSaved(savedEvents);
     }
@@ -157,28 +157,25 @@ export default function SavedEvents({dimensions, setIsLoggedIn}) {
 
     const listOfEvents = saved
         .map((event: musicEvent, index: number) => {
-            const cleanEvent = generateUserFriendlyEvent.create(event);
-
             return (
                 <Pressable
                     key={event.id}
                     onPress={() => {
                         navigation.navigate('Single', {
                             event: event,
-                            name: `${cleanEvent.artist} - ${cleanEvent.city}`
+                            name: `${event.artist} - ${event.city}`
                         })
                     }}
                 >
-                    {/* MAKE PRESSABLE BACKGROUND TO ARTIST IMAGE */}
                     <View key={index} style={styles.eventContainer}>
                         <View style={styles.dateContainer}>
-                            <Text style={styles.month}>{cleanEvent.month}</Text>
-                            <Text style={styles.day}>{cleanEvent.day}</Text>
+                            <Text style={styles.month}>{event.month}</Text>
+                            <Text style={styles.day}>{event.day}</Text>
                         </View>
                         <View style={styles.infoContainer}>
-                            <Text style={styles.weekday}>{cleanEvent.weekday}</Text>
-                            <Text style={styles.city}>{cleanEvent.city} {'\u2022'} {cleanEvent.address}</Text>
-                            <Text style={styles.eventName}>{cleanEvent.eventName}</Text>
+                            <Text style={styles.weekday}>{event.weekday}</Text>
+                            <Text style={styles.city}>{event.city} {'\u2022'} {event.address}</Text>
+                            <Text style={styles.eventName}>{event.eventName}</Text>
                         </View>
                         <View style={styles.heartContainer}>
                             <HeaderPressableHeart event={event} heartColor={colors.blue}/>
