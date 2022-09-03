@@ -1,7 +1,5 @@
 import Ticketmaster from "../constants/Ticketmaster";
 import Geohash from "latlon-geohash";
-import getUserCoords from "../hooks/getUserCoords";
-import getGeopoint from "../constants/Location";
 
 const DEFAULT_GEOPOINT = Geohash.encode(<number>59.329249546700744, <number>18.068613228289472, 6);
 

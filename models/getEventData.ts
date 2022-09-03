@@ -20,16 +20,6 @@ export default {
     },
     getAttractionEvents: async (attraction: string) => {
         return await ticketmasterApiConnect.findEvents(attraction);
-
-        // return await response
-        //     .map((event: musicEvent, index: number) => {
-        //         return {
-        //             address: event._embedded.venues[0].address.line1,
-        //             city: event._embedded.venues[0].city.name,
-        //             time: event.date.start.localTime,
-        //             date: event.date.start.localDate
-        //         }
-        //     });
     },
     getMainGenre: (event: musicEvent) => {
         try {
