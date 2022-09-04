@@ -132,7 +132,8 @@ export default function App() {
                     {() => <MapViewNavigation
                         allEvents={allEvents}
                         isLoggedIn={isLoggedIn}
-                        dimensions={dimensions}/>}
+                        dimensions={dimensions}
+                    />}
                 </Tab.Screen>
                 {isLoggedIn ?
                     <Tab.Screen name="Mina sidor">

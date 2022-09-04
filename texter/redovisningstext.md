@@ -149,4 +149,37 @@ testramverket jest. Testerna som körs är:
   * Testar att rätt information visas upp om ett evenemang i SingleEvent-vyn.
 
 ## Allmänt om projektet
+Utvecklingen av appen har varit lite konstig för mig. Jag tog en ofrivillig paus under tidig sommar då jag flyttade 
+från Tyskland till Sverige. När jag inledde projektet hade jag precis börjat med React Native igen efter att inte ha 
+rört det på ett tag. Det tog därför ett tag för mig att verkligen komma igång med projektet. 
 
+Överlag har det dock gått rätt bra att genomföra projektet. Jag har lärt mig mycket om hur man arbetar med ramverk, 
+om hur appar fungerar och framför allt om APIer. I början av projektet när jag försökte få uppkopplingen mot 
+Spotifys och Ticketmasters API och funka hade jag några utmaningar, framför allt med Spotifys. Jag var van med de 
+APIn vi jobbat med i kursen, där man skickar en request med en API key och får tillbaka ett svar. Ticketmasters API 
+fungerar så, så det gick ganska lätt att lösa. Spotify kräver dock att man skickar med en token när man skickar en 
+query till APIt. Om jag förstått det rätt så har varje token en livslängd av en (1) request, vilket jag blev mycket 
+förvirrad av till en början. Till slut förstod jag att jag var tvungen att nästla min query-request i en 
+token-request och skicka med responsen från token-requesten till min query. Efter jag löst det gick det fint att 
+göra slagningar i Spotifys API.
+
+Det har också stundtals varit utmanande att förstå hur applikationens flöde fungerar och vart flaskhalsarna ligger. 
+Eftersom applikationen bygger på en viss mängd data som ska presenteras har det varit viktigt att förstå vart datan 
+ska laddas och hur man snabbar på den processen. Eftersom jag velat att användarens plats ska ligga i fokus har det 
+varit viktigt att ladda events baserat på det. Expo Location tar dock ganska lång tid på sig att ladda och om jag 
+helt skulle utgå ifrån det skulle First Meaningful Paint vara på 7-10 sekunder. Appen i sin nuvarande form 
+kompromissar därför här och laddar först event i Stockholm, för att sedan känna av vart användaren är och uppdatera 
+de evenemang som visas. Inte optimalt, men användbart.
+
+Projektet har tagit ganska lång tid att genomföra, men mer på grund av bristande motivation från min sida snarare än 
+att det varit övermäktigt. Jag tycker med facit i hand att projektet var rimligt för det vi gått igenom i kursen och 
+jag är glad att jag gjort det.
+
+## Avslutande ord
+Kursen har varit bra och vi har tagit upp många användningsområden av de tekniker vi använt som känns relevanta. Det 
+har varit intressant att få använda olika APIer och se hur den data man hämtar kan användas för att göra en app som 
+går att använda. Om det är något jag vill ge feedback på är det att jag tycker vi kunde haft lite mer djupdyk i 
+vissa koncept som är viktiga, framför allt i hur ramverket fungerar när det gäller exempelvis useEffect. Jag kunde 
+ibland känna som att jag "gjorde som jag blev tillsagd" när jag arbetade med ramverket snarare än att förstå 
+*varför* jag gjorde det. Med det sagt förstår jag också att tempot måste vara lite uppskruvat för att hinna med allt 
+som ska gås igenom innan man börjar med projektet. Som alltid bra föreläsningar av Emil & Andreas.
