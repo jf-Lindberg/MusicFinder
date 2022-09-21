@@ -79,6 +79,7 @@ export default function ArtistEvents({route, dimensions, navigation}) {
     const [artistLink, setArtistLink] = useState(null);
     const [bottomContent, setBottomContent] = useState<number>(0);
     const [events, setEvents] = useState<Array<musicEvent>>([]);
+    const [loaded, setLoaded] = useState<boolean>(false)
 
     const artist = event.artist;
 
@@ -86,11 +87,20 @@ export default function ArtistEvents({route, dimensions, navigation}) {
         async function getEvents() {
             try {
                 await getEventData.getAttractionEvents(artist)
-                    .then(r => setEvents(r.map((event: musicEvent) => {
+                    .then(r => setEvents(r
+                        .filter((event: musicEvent) => {
+                            try {
+                                return event.id !== 'Z698xZq2Z17b3Fg' && event._embedded.attractions[0].externalLinks !== undefined
+                            } catch (e) {
+                            }
+                        })
+                        .map((event: musicEvent) => {
                         return generateUserFriendlyEvent.create(event);
                     })));
             } catch (e) {
                 console.error(e)
+            } finally {
+                setLoaded(true);
             }
 
         }
@@ -109,6 +119,10 @@ export default function ArtistEvents({route, dimensions, navigation}) {
     }
 
     getSpotifyLink().then(r => 'ignored');
+
+    if (!loaded) {
+        return null;
+    }
 
     return (
         <View style={{flex: 1}}>

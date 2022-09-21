@@ -83,6 +83,12 @@ export default function RelatedEvents({artist, dimensions, navigation}) {
             try {
                 const evts = await getEventData.getAttractionEvents(artist);
                 const cleanEvents = evts
+                    .filter((event: musicEvent) => {
+                        try {
+                            return event.id !== 'Z698xZq2Z17b3Fg' && event._embedded.attractions[0].externalLinks !== undefined
+                        } catch (e) {
+                        }
+                    })
                     .map((event: musicEvent) => {
                         return generateUserFriendlyEvent.create(event);
                 })

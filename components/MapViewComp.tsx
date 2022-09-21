@@ -5,6 +5,8 @@ import MapView, {Callout, Marker} from "react-native-maps";
 import {musicEvent} from "../interface/event";
 
 export default function MapViewComp({events, navigation, dimensions, style}) {
+    console.log(events);
+
     const defaultMapStyle = StyleSheet.create({
         map: {
             ...StyleSheet.absoluteFillObject
@@ -29,6 +31,7 @@ export default function MapViewComp({events, navigation, dimensions, style}) {
     }, [])
 
     const [location, setLocation] = useState(null);
+    const [loaded, setLoaded] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
@@ -44,21 +47,24 @@ export default function MapViewComp({events, navigation, dimensions, style}) {
 
             if (isMounted) {
                 setLocation({
-                        latitude: currentLocation.coords.latitude,
-                        longitude: currentLocation.coords.longitude
-                    })
+                    latitude: currentLocation.coords.latitude,
+                    longitude: currentLocation.coords.longitude
+                })
+                setLoaded(true);
             }
         }
 
         userLocation().then(r => 'ignored');
 
         return () => {
-            isMounted = false
+            isMounted = false;
+            setLoaded(false);
         }
     }, []);
 
     const markers = events
-        .map((event: musicEvent, index: number) => {
+        .map((event: cleanEvent, index: number) => {
+            console.log(event.location);
             return (
                 <Marker
                     key={event.id}
@@ -98,10 +104,46 @@ export default function MapViewComp({events, navigation, dimensions, style}) {
         }
     }
 
+    if (style === 'single') {
+        return (
+            <MapView
+                style={mapStyle.map}
+                userInterfaceStyle={'dark'}
+                region={{
+                    longitude: parseFloat(events[0].location.longitude),
+                    latitude: parseFloat(events[0].location.latitude),
+                    latitudeDelta: 2,
+                    longitudeDelta: 2
+                }}
+            >
+                {markers}
+                {userMarker()}
+            </MapView>
+        )
+    }
+
+    if (!loaded) {
+        return (
+            <MapView
+                style={mapStyle.map}
+                userInterfaceStyle={'dark'}
+            >
+                {markers}
+                {userMarker()}
+            </MapView>
+        )
+    }
+
     return (
         <MapView
             style={mapStyle.map}
             userInterfaceStyle={'dark'}
+            region={{
+                longitude: location.longitude,
+                latitude: location.latitude,
+                longitudeDelta: 2,
+                latitudeDelta: 2
+            }}
         >
             {markers}
             {userMarker()}

@@ -107,10 +107,8 @@ riktigt var i uppgiftens scope, så jag har inte försökt mig på det under utv
 
 ## Krav 3
 För detta kravet valde jag att matcha designen på Ticketmasters app, eftersom de hade relativt liknande vyer som jag 
-tänkte ha och samtidigt använder samma data som jag använder. Appen ser ut såhär:
-
-Detta är mina versioner av vyerna ovan:
-
+tänkte ha och samtidigt använder samma data som jag använder. Bilder som jämför Ticketmaster och MusicFinder är 
+bifogade med texten.
 
 För att kopiera Ticketmasters design har det varit mycket trial and error. Jag har hittat ett typsnitt som var 
 hyfsat likt det de använder (deras typsnitt är inte öppen licens) och har använt ColorZilla för att identifera vilka 
@@ -136,17 +134,18 @@ Några enkla test går att köra genom att stå i hemkatalogen och köra kommand
 testramverket jest. Testerna som körs är:
 
 * EventPressable.test.js
-  * Testar att de tryckbara komponenterna som visas i karuseller i hemvyn visar upp rätt information.
+  * När EventPressable laddas ska namnet på artisten som har eventet visas.
 * HomeHeaderLoggedIn.test.js
-  * Testar att headern i hemvyn visar rätt information när en användare är inloggad.
+  * När användaren är inloggad ska headern i hemvyn visa möjligheten att logga ut.
 * HomeHeaderLoggedOut.test.js
-  * Testar att headern i hemvyn visar rätt information när en användare är utloggad.
+  * När användaren inte är inloggad ska headern i hemvyn visa möjligheten att logga in.
 * Login.test.js
-  * Testar att login-formuläret laddas på rätt sätt.
+  * Login-komponentens formulär ska visa fält för e-mail och lösenord. Det ska även finnas en logga in-knapp och en 
+    möjlighet att registrera sig istället.
 * Register.test.js
-  * Testar att registrerings-formuläret laddas på rätt sätt.
+  * När användaren ska registrera sig ska ett formulär laddas som visar fält för email och lösenord.
 * SingleEvent.test.js
-  * Testar att rätt information visas upp om ett evenemang i SingleEvent-vyn.
+  * När användaren kollar på ett event ska artistens namn, datumet på evenemanget och adressen för evenemanget visas.
 
 ## Allmänt om projektet
 Utvecklingen av appen har varit lite konstig för mig. Jag tog en ofrivillig paus under tidig sommar då jag flyttade 

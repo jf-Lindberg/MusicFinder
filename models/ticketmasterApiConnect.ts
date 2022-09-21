@@ -25,7 +25,7 @@ export default {
 
 
         console.log('Ticketmaster API: Done loading. Events array length: ' + response._embedded.events.length);
-        return await response._embedded.events;
+        return response._embedded.events;
     },
     getAttractionDetails: async function (id: string) {
         const url = Ticketmaster.url + '/attractions/' + id + '.json?apikey=' + Ticketmaster.key;

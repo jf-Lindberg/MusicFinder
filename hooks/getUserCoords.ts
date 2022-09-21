@@ -9,9 +9,12 @@ export default async function getUserCoords() {
             coords: {
                 latitude: 56.16116302956264,
                 longitude: 15.593437458169973
-            }
+            },
+            latitudeDelta: 2,
+            longitudeDelta: 2
         }
     }
     const userCoords = await Location.getCurrentPositionAsync({});
+
     return Geohash.encode(<number>userCoords?.coords.latitude, <number>userCoords?.coords.longitude, 6);
 }

@@ -21,7 +21,21 @@ export default function HomeScreen({allEvents, dimensions, navigation, isLoggedI
             color: colors.text,
             marginLeft: dimensions.screen.width * 0.06,
         }
-    })
+    });
+
+    let listOfArtists: any[] = [];
+    let displayedEvents: any[] = [];
+
+    allEvents
+        .map((event: cleanEvent) => {
+            if (!listOfArtists.includes(event.artist)) {
+                displayedEvents.push(event);
+                listOfArtists.push(event.artist);
+                return;
+            } else {
+                return;
+            }
+        })
 
     return (
         <>
@@ -43,11 +57,11 @@ export default function HomeScreen({allEvents, dimensions, navigation, isLoggedI
                 <ScrollView>
                     <Header dimensions={dimensions} navigation={navigation} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
                     <View style={{marginTop: -dimensions.screen.height * 0.033}}>
-                        <EventPressable event={allEvents[0]} dimensions={dimensions} imageScale={{width: 1, height: 1}}
+                        <EventPressable event={displayedEvents[0]} dimensions={dimensions} imageScale={{width: 1, height: 1}}
                                         navigation={navigation}/>
                     </View>
                     <View style={{marginTop: dimensions.screen.height * 0.065}}>
-                        <EventCarousel events={[allEvents[1], allEvents[2], allEvents[3]]} dimensions={dimensions}
+                        <EventCarousel events={[displayedEvents[1], displayedEvents[2], displayedEvents[3]]} dimensions={dimensions}
                                        imageScale={{width: 0.75, height: 0.75}} navigation={navigation}/>
                     </View>
                     <Divider style={styles.divider} leadingInset={24} trailingInset={24} color={colors.divider}/>
@@ -55,7 +69,7 @@ export default function HomeScreen({allEvents, dimensions, navigation, isLoggedI
                         <Text style={styles.popular}>Popular tickets</Text>
                     </View>
                     <View style={{marginTop: dimensions.screen.height * 0.065}}>
-                        <EventCarousel events={[allEvents[4], allEvents[5], allEvents[6]]} dimensions={dimensions}
+                        <EventCarousel events={[displayedEvents[4], displayedEvents[5], displayedEvents[6]]} dimensions={dimensions}
                                        imageScale={{width: 0.75, height: 0.75}} navigation={navigation}/>
                     </View>
                     <Divider style={styles.divider} leadingInset={24} trailingInset={24} color={colors.divider}/>
@@ -63,7 +77,7 @@ export default function HomeScreen({allEvents, dimensions, navigation, isLoggedI
                         <Text style={styles.popular}>Discover</Text>
                     </View>
                     <View style={{marginTop: dimensions.screen.height * 0.065}}>
-                        <EventCarousel events={[allEvents[7], allEvents[8], allEvents[9]]} dimensions={dimensions}
+                        <EventCarousel events={[displayedEvents[7], displayedEvents[8], displayedEvents[9]]} dimensions={dimensions}
                                        imageScale={{width: 0.75, height: 0.75}} navigation={navigation}/>
                     </View>
                 </ScrollView>

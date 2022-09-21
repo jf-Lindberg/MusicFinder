@@ -14,7 +14,15 @@ export default {
         const artistImage = {
             uri: `${getEventData.getBestImage(event)}`
         };
-        const artist = event._embedded.attractions[0].name;
+
+        let artist;
+
+        try {
+            artist = event._embedded.attractions[0].name;
+        } catch (e) {
+            console.log(e);
+        }
+
 
         const date = new Date(event.dates.start.localDate);
         const year = date.toLocaleString('default', {year: 'numeric'});

@@ -55,7 +55,7 @@ export default function App() {
                 setAllEvents(await getEvents());
                 setIsLoggedIn(await checkLoggedIn());
             } catch (e) {
-                console.warn(e);
+                console.log(e);
             } finally {
                 setAppIsReady(true);
             }
@@ -73,7 +73,7 @@ export default function App() {
                 setAllEvents(await getEvents('', LOCATION));
                 setLocation(LOCATION);
             } catch (e) {
-                console.warn(e);
+                console.log(e);
             }
         }
 
